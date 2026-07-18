@@ -1,0 +1,1 @@
+mongodb+srv://prelekar0_db_user:RpwgRnPJzbmVZodc@ubglobal.hmxr5ot.mongodb.net/?appName=UBGlobal==>[HIDDEN_MONGODB_URL]

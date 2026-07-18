@@ -1,0 +1,21 @@
+{
+  "name": "United Brothers Global",
+  "short_name": "UBGlobal",
+  "description": "Premium Engineering Materials Import & Export",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A1F44",
+  "theme_color": "#0A1F44",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
