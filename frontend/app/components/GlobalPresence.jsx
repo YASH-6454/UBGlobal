@@ -19,30 +19,30 @@ const LeafletMap = dynamic(() => import('./LeafletMap'), {
 });
 
 const DESTINATIONS = [
-  { name: 'United States', flag: '🇺🇸' },
-  { name: 'United Kingdom', flag: '🇬🇧' },
-  { name: 'Germany', flag: '🇩🇪' },
-  { name: 'France', flag: '🇫🇷' },
-  { name: 'Italy', flag: '🇮🇹' },
-  { name: 'UAE', flag: '🇦🇪' },
-  { name: 'Saudi Arabia', flag: '🇸🇦' },
-  { name: 'Qatar', flag: '🇶🇦' },
-  { name: 'Oman', flag: '🇴🇲' },
-  { name: 'Kuwait', flag: '🇰🇼' },
-  { name: 'Singapore', flag: '🇸🇬' },
-  { name: 'Malaysia', flag: '🇲🇾' },
-  { name: 'Thailand', flag: '🇹🇭' },
-  { name: 'Vietnam', flag: '🇻🇳' },
-  { name: 'South Africa', flag: '🇿🇦' },
-  { name: 'Nigeria', flag: '🇳🇬' },
-  { name: 'Kenya', flag: '🇰🇪' },
-  { name: 'Australia', flag: '🇦🇺' },
-  { name: 'New Zealand', flag: '🇳🇿' },
-  { name: 'Brazil', flag: '🇧🇷' },
-  { name: 'Mexico', flag: '🇲🇽' },
-  { name: 'Turkey', flag: '🇹🇷' },
-  { name: 'Japan', flag: '🇯🇵' },
-  { name: 'South Korea', flag: '🇰🇷' },
+  { name: 'United States', code: 'US' },
+  { name: 'United Kingdom', code: 'GB' },
+  { name: 'Germany', code: 'DE' },
+  { name: 'France', code: 'FR' },
+  { name: 'Italy', code: 'IT' },
+  { name: 'UAE', code: 'AE' },
+  { name: 'Saudi Arabia', code: 'SA' },
+  { name: 'Qatar', code: 'QA' },
+  { name: 'Oman', code: 'OM' },
+  { name: 'Kuwait', code: 'KW' },
+  { name: 'Singapore', code: 'SG' },
+  { name: 'Malaysia', code: 'MY' },
+  { name: 'Thailand', code: 'TH' },
+  { name: 'Vietnam', code: 'VN' },
+  { name: 'South Africa', code: 'ZA' },
+  { name: 'Nigeria', code: 'NG' },
+  { name: 'Kenya', code: 'KE' },
+  { name: 'Australia', code: 'AU' },
+  { name: 'New Zealand', code: 'NZ' },
+  { name: 'Brazil', code: 'BR' },
+  { name: 'Mexico', code: 'MX' },
+  { name: 'Turkey', code: 'TR' },
+  { name: 'Japan', code: 'JP' },
+  { name: 'South Korea', code: 'KR' },
 ];
 
 export default function GlobalPresence() {
@@ -133,13 +133,18 @@ export default function GlobalPresence() {
                 animate={inView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.25, delay: 0.4 + i * 0.015 }}
                 onClick={() => handleCountrySelect(dest.name)}
-                className={`px-4 py-2 text-sm rounded-full border transition-all duration-300 cursor-pointer ${
+                className={`px-4 py-2 text-sm rounded-full border transition-all duration-300 cursor-pointer flex items-center gap-2 ${
                   selectedCountry === dest.name
                     ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105'
                     : 'bg-surface text-secondary border-surface-darker/40 hover:bg-primary hover:text-white hover:border-primary hover:shadow-md'
                 }`}
               >
-                {dest.flag} {dest.name}
+                <span className={`inline-flex items-center justify-center w-6 h-4 rounded-sm text-[10px] font-bold tracking-wide leading-none ${
+                  selectedCountry === dest.name
+                    ? 'bg-white/20 text-white'
+                    : 'bg-eng/10 text-eng'
+                }`}>{dest.code}</span>
+                {dest.name}
               </motion.button>
             ))}
           </div>

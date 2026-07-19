@@ -51,6 +51,8 @@ class ProductCreate(BaseModel):
     description: str
     specs: list[str] = []
     image: Optional[str] = None
+    category: Optional[str] = None
+    emoji: Optional[str] = None
 
 class ProductResponse(ProductCreate):
     id: str

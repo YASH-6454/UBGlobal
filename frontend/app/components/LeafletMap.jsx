@@ -8,30 +8,30 @@ const INDIA_HQ = [20.5937, 78.9629];
 
 // ── All export destinations with real lat/lng ──
 const DESTINATIONS = [
-  { name: 'United States', lat: 38.9072, lng: -77.0369, flag: '🇺🇸' },
-  { name: 'United Kingdom', lat: 51.5074, lng: -0.1278, flag: '🇬🇧' },
-  { name: 'Germany', lat: 52.52, lng: 13.405, flag: '🇩🇪' },
-  { name: 'France', lat: 48.8566, lng: 2.3522, flag: '🇫🇷' },
-  { name: 'Italy', lat: 41.9028, lng: 12.4964, flag: '🇮🇹' },
-  { name: 'UAE', lat: 24.4539, lng: 54.3773, flag: '🇦🇪' },
-  { name: 'Saudi Arabia', lat: 24.7136, lng: 46.6753, flag: '🇸🇦' },
-  { name: 'Qatar', lat: 25.276, lng: 51.52, flag: '🇶🇦' },
-  { name: 'Oman', lat: 21.4735, lng: 55.9754, flag: '🇴🇲' },
-  { name: 'Kuwait', lat: 29.3759, lng: 47.9774, flag: '🇰🇼' },
-  { name: 'Singapore', lat: 1.3521, lng: 103.8198, flag: '🇸🇬' },
-  { name: 'Malaysia', lat: 3.139, lng: 101.6869, flag: '🇲🇾' },
-  { name: 'Thailand', lat: 13.7563, lng: 100.5018, flag: '🇹🇭' },
-  { name: 'Vietnam', lat: 21.0285, lng: 105.8542, flag: '🇻🇳' },
-  { name: 'South Africa', lat: -30.5595, lng: 22.9375, flag: '🇿🇦' },
-  { name: 'Nigeria', lat: 9.082, lng: 7.4951, flag: '🇳🇬' },
-  { name: 'Kenya', lat: -1.2921, lng: 36.8219, flag: '🇰🇪' },
-  { name: 'Australia', lat: -25.2744, lng: 133.7751, flag: '🇦🇺' },
-  { name: 'New Zealand', lat: -40.9006, lng: 174.886, flag: '🇳🇿' },
-  { name: 'Brazil', lat: -14.235, lng: -51.9253, flag: '🇧🇷' },
-  { name: 'Mexico', lat: 23.6345, lng: -102.5528, flag: '🇲🇽' },
-  { name: 'Turkey', lat: 39.9334, lng: 32.8597, flag: '🇹🇷' },
-  { name: 'Japan', lat: 36.2048, lng: 138.2529, flag: '🇯🇵' },
-  { name: 'South Korea', lat: 35.9078, lng: 127.7669, flag: '🇰🇷' },
+  { name: 'United States', lat: 38.9072, lng: -77.0369, code: 'US' },
+  { name: 'United Kingdom', lat: 51.5074, lng: -0.1278, code: 'GB' },
+  { name: 'Germany', lat: 52.52, lng: 13.405, code: 'DE' },
+  { name: 'France', lat: 48.8566, lng: 2.3522, code: 'FR' },
+  { name: 'Italy', lat: 41.9028, lng: 12.4964, code: 'IT' },
+  { name: 'UAE', lat: 24.4539, lng: 54.3773, code: 'AE' },
+  { name: 'Saudi Arabia', lat: 24.7136, lng: 46.6753, code: 'SA' },
+  { name: 'Qatar', lat: 25.276, lng: 51.52, code: 'QA' },
+  { name: 'Oman', lat: 21.4735, lng: 55.9754, code: 'OM' },
+  { name: 'Kuwait', lat: 29.3759, lng: 47.9774, code: 'KW' },
+  { name: 'Singapore', lat: 1.3521, lng: 103.8198, code: 'SG' },
+  { name: 'Malaysia', lat: 3.139, lng: 101.6869, code: 'MY' },
+  { name: 'Thailand', lat: 13.7563, lng: 100.5018, code: 'TH' },
+  { name: 'Vietnam', lat: 21.0285, lng: 105.8542, code: 'VN' },
+  { name: 'South Africa', lat: -30.5595, lng: 22.9375, code: 'ZA' },
+  { name: 'Nigeria', lat: 9.082, lng: 7.4951, code: 'NG' },
+  { name: 'Kenya', lat: -1.2921, lng: 36.8219, code: 'KE' },
+  { name: 'Australia', lat: -25.2744, lng: 133.7751, code: 'AU' },
+  { name: 'New Zealand', lat: -40.9006, lng: 174.886, code: 'NZ' },
+  { name: 'Brazil', lat: -14.235, lng: -51.9253, code: 'BR' },
+  { name: 'Mexico', lat: 23.6345, lng: -102.5528, code: 'MX' },
+  { name: 'Turkey', lat: 39.9334, lng: 32.8597, code: 'TR' },
+  { name: 'Japan', lat: 36.2048, lng: 138.2529, code: 'JP' },
+  { name: 'South Korea', lat: 35.9078, lng: 127.7669, code: 'KR' },
 ];
 
 // ── Generate curved arc points between two coordinates ──
@@ -129,7 +129,7 @@ export default function LeafletMap({ selectedCountry, onCountrySelect }) {
         <div class="hq-container">
           <div class="hq-pulse"></div>
           <div class="hq-dot"></div>
-          <div class="hq-label">🇮🇳 India (HQ)</div>
+          <div class="hq-label">IN India (HQ)</div>
         </div>
       `,
       iconSize: [120, 60],
@@ -144,7 +144,7 @@ export default function LeafletMap({ selectedCountry, onCountrySelect }) {
         html: `
           <div class="dest-container">
             <div class="dest-dot"></div>
-            <div class="dest-label">${dest.flag} ${dest.name}</div>
+            <div class="dest-label"><span style="font-weight:800;font-size:9px;letter-spacing:0.5px;opacity:0.7;margin-right:3px;">${dest.code}</span> ${dest.name}</div>
           </div>
         `,
         iconSize: [160, 44],

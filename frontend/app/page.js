@@ -85,17 +85,11 @@ function HeroSection() {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/banners`)
       .then(res => res.json())
-      .then(data => setBanners(data.length > 0 ? data : null))
+      .then(data => setBanners(data))
       .catch(console.error);
   }, []);
 
-  const currentBanner = banners && banners.length > 0 ? banners[currentIndex] : {
-    title: 'Engineering. Agriculture. Technology.',
-    description: 'United Brothers Global — a diversified trading and services company delivering premium engineering materials, fresh produce, and IT solutions across 50+ countries.',
-    image: '/images/hero-bg.png',
-    cta_text: 'Get a Quote',
-    cta_link: '/contact'
-  };
+  const currentBanner = banners && banners.length > 0 ? banners[currentIndex] : null;
 
   const nextBanner = () => {
     if (banners && banners.length > 0) {
@@ -108,6 +102,10 @@ function HeroSection() {
       setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
     }
   };
+
+  if (!currentBanner) {
+    return <section className="relative min-h-screen flex items-center overflow-hidden group bg-primary" />;
+  }
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden group">
@@ -410,6 +408,7 @@ function TestimonialsSection() {
 /* ─── Blog Preview ─── */
 function BlogPreview() {
   const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true });
+
   const [recentPosts, setRecentPosts] = useState([]);
 
   useEffect(() => {

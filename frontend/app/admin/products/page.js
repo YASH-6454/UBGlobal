@@ -7,7 +7,7 @@ export default function ProductsManager() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', division: 'Engineering', description: '', specs: '', image: '' });
+  const [formData, setFormData] = useState({ name: '', division: 'Engineering', description: '', specs: '', image: '', category: '', emoji: '' });
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function ProductsManager() {
       
       if (res.ok) {
         setIsModalOpen(false);
-        setFormData({ name: '', division: 'Engineering', description: '', specs: '', image: '' });
+        setFormData({ name: '', division: 'Engineering', description: '', specs: '', image: '', category: '', emoji: '' });
         fetchProducts();
       } else {
         alert('Failed to save product');
@@ -114,6 +114,7 @@ export default function ProductsManager() {
                 <th className="p-4 font-semibold border-b border-surface-darker/40">Image</th>
                 <th className="p-4 font-semibold border-b border-surface-darker/40">Name</th>
                 <th className="p-4 font-semibold border-b border-surface-darker/40">Division</th>
+                <th className="p-4 font-semibold border-b border-surface-darker/40">Category</th>
                 <th className="p-4 font-semibold border-b border-surface-darker/40 text-right">Actions</th>
               </tr>
             </thead>
@@ -127,6 +128,9 @@ export default function ProductsManager() {
                   </td>
                   <td className="p-4 font-medium text-primary">{product.name}</td>
                   <td className="p-4"><span className="px-3 py-1 bg-surface-darker/30 rounded-full text-xs font-semibold text-secondary">{product.division}</span></td>
+                  <td className="p-4">
+                    {product.category && <span className="text-xs text-secondary bg-surface rounded px-2 py-1">{product.emoji} {product.category}</span>}
+                  </td>
                   <td className="p-4 text-right">
                     <button onClick={() => handleDelete(product.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"><FiTrash2 /></button>
                   </td>
@@ -155,7 +159,19 @@ export default function ProductsManager() {
                     <option>Engineering</option>
                     <option>Agriculture</option>
                     <option>IT Services</option>
+                    <option>Handcrafts</option>
                   </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-semibold text-primary mb-2">Category (Optional)</label>
+                  <input type="text" className="w-full p-3 rounded-xl border border-surface-darker/60 focus:ring-2 focus:ring-eng/50" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} placeholder="e.g. Fruits, Diyas" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-primary mb-2">Emoji (Optional)</label>
+                  <input type="text" className="w-full p-3 rounded-xl border border-surface-darker/60 focus:ring-2 focus:ring-eng/50" value={formData.emoji} onChange={e => setFormData({...formData, emoji: e.target.value})} placeholder="e.g. 🍎, 🪔" />
                 </div>
               </div>
 

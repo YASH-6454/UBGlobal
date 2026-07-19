@@ -9,6 +9,7 @@ import TestimonialCarousel from '../components/sections/TestimonialCarousel';
 import FAQSection from '../components/sections/FAQSection';
 
 import { useState, useEffect } from 'react';
+
 export default function HandcraftsContent() {
   const [heroRef, heroInView] = useInView({ threshold: 0.05, triggerOnce: true });
   const [products, setProducts] = useState([]);
