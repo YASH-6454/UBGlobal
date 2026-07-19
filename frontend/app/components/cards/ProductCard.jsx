@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FiArrowRight } from 'react-icons/fi';
 
-export default function ProductCard({ name, image, description, href, specs = [], index = 0 }) {
+export default function ProductCard({ name, image, description, href = "#", specs = [], index = 0 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
