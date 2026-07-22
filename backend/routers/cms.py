@@ -1,3 +1,4 @@
+import re
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional
 from datetime import datetime, timezone
@@ -11,6 +12,14 @@ from schemas import (
 )
 
 router = APIRouter(prefix="/api", tags=["cms"])
+
+def generate_slug(name: str) -> str:
+    """Generate a URL-friendly slug from a product name."""
+    slug = name.lower().strip()
+    slug = re.sub(r'[^a-z0-9\s-]', '', slug)
+    slug = re.sub(r'[\s]+', '-', slug)
+    slug = re.sub(r'-+', '-', slug)
+    return slug.strip('-')
 
 # --- Products ---
 
@@ -27,10 +36,22 @@ async def get_products(division: Optional[str] = None):
         products.append(doc)
     return products
 
+@router.get("/products/by-slug/{slug}", response_model=ProductResponse)
+async def get_product_by_slug(slug: str):
+    db = get_db()
+    doc = await db.products.find_one({"slug": slug})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Product not found")
+    doc["id"] = str(doc.pop("_id"))
+    return doc
+
 @router.post("/products", response_model=ProductResponse)
 async def create_product(product: ProductCreate, admin: dict = Depends(get_current_admin)):
     db = get_db()
     doc = product.dict()
+    # Auto-generate slug from name if not provided
+    if not doc.get("slug"):
+        doc["slug"] = generate_slug(doc["name"])
     doc["created_at"] = datetime.now(timezone.utc)
     
     result = await db.products.insert_one(doc)

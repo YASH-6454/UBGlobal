@@ -47,6 +47,7 @@ class AdminResponse(BaseModel):
 
 class ProductCreate(BaseModel):
     name: str
+    slug: Optional[str] = None
     division: str
     description: str
     specs: list[str] = []

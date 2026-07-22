@@ -21,13 +21,30 @@ export default function HandcraftsContent() {
       .catch(console.error);
   }, []);
 
-  const categories = [
-    { name: 'Diyas', href: '/handcrafts/diyas', count: products.filter(p => p.category === 'Diyas').length, emoji: '🪔', color: 'bg-amber-50 border-amber-200 hover:bg-amber-100' },
-    { name: 'Tea Light Holders', href: '/handcrafts/tea-light-holders', count: products.filter(p => p.category === 'Tea Light Holders').length, emoji: '🕯️', color: 'bg-orange-50 border-orange-200 hover:bg-orange-100' },
-    { name: 'Pooja Accessories', href: '/handcrafts/pooja-accessories', count: products.filter(p => p.category === 'Pooja Accessories').length, emoji: '🙏', color: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100' },
-    { name: 'Festival Decor & Gifts', href: '/handcrafts/festival-decor', count: products.filter(p => p.category === 'Festival Decor' || p.category === 'Gift Sets').length, emoji: '🎊', color: 'bg-red-50 border-red-200 hover:bg-red-100' },
-    { name: 'Private Label / OEM', href: '/handcrafts/private-label', count: products.filter(p => p.category === 'Private Label').length, emoji: '🏭', color: 'bg-stone-50 border-stone-200 hover:bg-stone-100' },
-  ];
+  // Build categories dynamically from products
+  const categoryColors = {
+    'Diyas': { emoji: '🪔', color: 'bg-amber-50 border-amber-200 hover:bg-amber-100' },
+    'Tea Light Holders': { emoji: '🕯️', color: 'bg-orange-50 border-orange-200 hover:bg-orange-100' },
+    'Pooja Accessories': { emoji: '🙏', color: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100' },
+    'Festival Decor': { emoji: '🎊', color: 'bg-red-50 border-red-200 hover:bg-red-100' },
+    'Gift Sets': { emoji: '🎊', color: 'bg-red-50 border-red-200 hover:bg-red-100' },
+    'Private Label': { emoji: '🏭', color: 'bg-stone-50 border-stone-200 hover:bg-stone-100' },
+  };
+
+  const categoryMap = {};
+  products.forEach(p => {
+    const cat = p.category || 'Other';
+    if (!categoryMap[cat]) categoryMap[cat] = [];
+    categoryMap[cat].push(p);
+  });
+
+  const categories = Object.keys(categoryMap).map(cat => ({
+    name: cat,
+    href: `/handcrafts?category=${encodeURIComponent(cat)}`,
+    count: categoryMap[cat].length,
+    emoji: categoryColors[cat]?.emoji || '📦',
+    color: categoryColors[cat]?.color || 'bg-gray-50 border-gray-200 hover:bg-gray-100',
+  }));
 
   return (
     <>
@@ -85,9 +102,12 @@ export default function HandcraftsContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader label="Our Products" title="Handcrafted" titleHighlight="Indian Artistry" highlightClass="text-gradient-craft" description="Traditional craftsmanship meets modern design — every piece tells a story of India's rich heritage." />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {products.map((item, i) => (
+            {products.map((item, i) => {
+              const slug = item.slug || item.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+              return (
               <motion.div key={item.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="bg-white rounded-2xl p-6 border border-surface-darker/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
+                className="bg-white rounded-2xl p-6 border border-surface-darker/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+                onClick={() => window.location.href = `/handcrafts/${slug}`}
               >
                 <div className="flex items-start justify-between mb-3">
                   <span className="text-4xl">{item.emoji}</span>
@@ -100,7 +120,8 @@ export default function HandcraftsContent() {
                   {item.specs?.[0] || 'Handcrafted Quality'}
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

@@ -20,9 +20,16 @@ export default function ProductDetail({
 }) {
   const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true });
 
-  const divisionColor = division === 'engineering' ? 'text-eng' : division === 'agriculture' ? 'text-agri' : 'text-it';
-  const divisionBg = division === 'engineering' ? 'bg-eng' : division === 'agriculture' ? 'bg-agri' : 'bg-it';
-  const divisionLightBg = division === 'engineering' ? 'bg-eng/10' : division === 'agriculture' ? 'bg-agri/10' : 'bg-it/10';
+  const colorMap = {
+    engineering: { text: 'text-eng', bg: 'bg-eng', lightBg: 'bg-eng/10' },
+    agriculture: { text: 'text-agri', bg: 'bg-agri', lightBg: 'bg-agri/10' },
+    'it-services': { text: 'text-it', bg: 'bg-it', lightBg: 'bg-it/10' },
+    handcrafts: { text: 'text-craft', bg: 'bg-craft', lightBg: 'bg-craft/10' },
+  };
+  const colors = colorMap[division] || colorMap.engineering;
+  const divisionColor = colors.text;
+  const divisionBg = colors.bg;
+  const divisionLightBg = colors.lightBg;
 
   const productSchema = {
     '@context': 'https://schema.org',

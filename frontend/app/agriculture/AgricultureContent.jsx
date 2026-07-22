@@ -21,11 +21,27 @@ export default function AgricultureContent() {
       .catch(console.error);
   }, []);
 
-  const categories = [
-    { name: 'Fruits', href: '/agriculture/fruits', count: produce.filter(p => p.category === 'Fruits' || p.specs?.includes('APEDA Certified')).length, emoji: '🍎', color: 'bg-green-50 border-green-200 hover:bg-green-100' },
-    { name: 'Vegetables', href: '/agriculture/vegetables', count: produce.filter(p => p.category === 'Vegetables' || p.specs?.includes('FSSAI Certified')).length, emoji: '🥬', color: 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100' },
-    { name: 'Spices', href: '/agriculture/spices', count: produce.filter(p => p.category === 'Spices' || p.specs?.includes('Whole & Ground')).length, emoji: '🌶️', color: 'bg-orange-50 border-orange-200 hover:bg-orange-100' },
-  ];
+  // Build categories dynamically from products
+  const categoryColors = {
+    'Fruits': { emoji: '🍎', color: 'bg-green-50 border-green-200 hover:bg-green-100' },
+    'Vegetables': { emoji: '🥬', color: 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100' },
+    'Spices': { emoji: '🌶️', color: 'bg-orange-50 border-orange-200 hover:bg-orange-100' },
+  };
+
+  const categoryMap = {};
+  produce.forEach(p => {
+    const cat = p.category || 'Other';
+    if (!categoryMap[cat]) categoryMap[cat] = [];
+    categoryMap[cat].push(p);
+  });
+
+  const categories = Object.keys(categoryMap).map(cat => ({
+    name: cat,
+    href: `/agriculture?category=${encodeURIComponent(cat)}`,
+    count: categoryMap[cat].length,
+    emoji: categoryColors[cat]?.emoji || '📦',
+    color: categoryColors[cat]?.color || 'bg-gray-50 border-gray-200 hover:bg-gray-100',
+  }));
 
   return (
     <>
@@ -52,7 +68,7 @@ export default function AgricultureContent() {
               ))}
             </div>
             <div className="flex flex-wrap gap-6 pt-6 border-t border-white/10">
-              {[{ v: '11+', l: 'Products' }, { v: 'APEDA', l: 'Certified' }, { v: '24/7', l: 'Cold Chain' }].map((s, i) => (
+              {[{ v: `${produce.length}+`, l: 'Products' }, { v: 'APEDA', l: 'Certified' }, { v: '24/7', l: 'Cold Chain' }].map((s, i) => (
                 <div key={i}><div className="text-2xl font-bold text-agri">{s.v}</div><div className="text-white/40 text-xs">{s.l}</div></div>
               ))}
             </div>
@@ -83,9 +99,12 @@ export default function AgricultureContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader label="Our Produce" title="Export Quality" titleHighlight="Indian Produce" highlightClass="text-gradient-agri" description="Fresh, certified, and carefully sourced from the best farms across India." />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {produce.map((item, i) => (
+            {produce.map((item, i) => {
+              const slug = item.slug || item.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+              return (
               <motion.div key={item.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="bg-white rounded-2xl p-6 border border-surface-darker/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
+                className="bg-white rounded-2xl p-6 border border-surface-darker/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+                onClick={() => window.location.href = `/agriculture/${slug}`}
               >
                 <div className="flex items-start justify-between mb-3">
                   <span className="text-4xl">{item.emoji}</span>
@@ -98,7 +117,8 @@ export default function AgricultureContent() {
                   {item.specs?.[0] || 'Premium Quality'}
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

@@ -7,65 +7,49 @@ import { GiSteelClaws, GiWheat, GiProcessor, GiFlame } from 'react-icons/gi';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const divisions = [
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+// Division definitions — static design constants
+const divisionDefs = [
   {
     name: 'Engineering Materials',
     href: '/engineering',
+    divisionKey: 'Engineering',
     icon: GiSteelClaws,
     color: 'text-eng',
     bg: 'bg-eng/10',
     accent: '#F97316',
     description: 'Bright Bars, Black Bars, Alloy & Carbon Steel',
-    links: [
-      { name: 'Bright Bars', href: '/engineering/bright-bars' },
-      { name: 'Black Bars', href: '/engineering/black-bars' },
-      { name: 'Alloy Steel', href: '/engineering/alloy-steel' },
-      { name: 'Carbon Steel', href: '/engineering/carbon-steel' },
-    ],
   },
   {
     name: 'Fruits & Vegetables',
     href: '/agriculture',
+    divisionKey: 'Agriculture',
     icon: GiWheat,
     color: 'text-agri',
     bg: 'bg-agri/10',
     accent: '#22C55E',
     description: 'Fresh produce export — Mangoes, Onions, Spices & more',
-    links: [
-      { name: 'Fruits', href: '/agriculture/fruits' },
-      { name: 'Vegetables', href: '/agriculture/vegetables' },
-      { name: 'Spices', href: '/agriculture/spices' },
-    ],
   },
   {
     name: 'IT Services',
     href: '/it-services',
+    divisionKey: 'IT Services',
     icon: GiProcessor,
     color: 'text-it',
     bg: 'bg-it/10',
     accent: '#3B82F6',
     description: 'Web Development, ERP, Cloud & Consultancy',
-    links: [
-      { name: 'Web Development', href: '/it-services/web-development' },
-      { name: 'App Development', href: '/it-services/app-development' },
-      { name: 'Cloud & DevOps', href: '/it-services/cloud-devops' },
-    ],
   },
   {
     name: 'Handcrafts',
     href: '/handcrafts',
+    divisionKey: 'Handcrafts',
     icon: GiFlame,
     color: 'text-craft',
     bg: 'bg-craft/10',
     accent: '#D97706',
     description: 'Clay Diyas, Tea Light Holders, Pooja Items & Gift Sets',
-    links: [
-      { name: 'Diyas', href: '/handcrafts/diyas' },
-      { name: 'Tea Light Holders', href: '/handcrafts/tea-light-holders' },
-      { name: 'Pooja Accessories', href: '/handcrafts/pooja-accessories' },
-      { name: 'Festival Decor & Gifts', href: '/handcrafts/festival-decor' },
-      { name: 'Private Label / OEM', href: '/handcrafts/private-label' },
-    ],
   },
 ];
 
@@ -82,7 +66,42 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileDivExpanded, setMobileDivExpanded] = useState(null);
+  const [divisions, setDivisions] = useState(
+    divisionDefs.map(d => ({ ...d, links: [] }))
+  );
   const megaTimeout = useRef(null);
+
+  // Fetch products from API and build dynamic sub-links
+  useEffect(() => {
+    fetch(`${API_URL}/api/products`)
+      .then(res => res.json())
+      .then(products => {
+        const divisionMap = {};
+        for (const div of divisionDefs) {
+          divisionMap[div.divisionKey] = [];
+        }
+        for (const product of products) {
+          const key = product.division;
+          if (divisionMap[key]) {
+            const slug = product.slug || product.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+            const divDef = divisionDefs.find(d => d.divisionKey === key);
+            divisionMap[key].push({
+              name: product.name,
+              href: `${divDef.href}/${slug}`,
+            });
+          }
+        }
+        setDivisions(
+          divisionDefs.map(d => ({
+            ...d,
+            links: divisionMap[d.divisionKey] || [],
+          }))
+        );
+      })
+      .catch(() => {
+        // Silently fail — keep empty links
+      });
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);

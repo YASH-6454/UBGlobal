@@ -85,7 +85,10 @@ export default function EngineeringContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader label="Our Products" title="Engineering Materials" description="A comprehensive range of engineering-grade steel products, sourced from certified mills and delivered to international standards." />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((p, i) => <ProductCard key={p.name} {...p} index={i} />)}
+            {products.map((p, i) => {
+              const slug = p.slug || p.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+              return <ProductCard key={p.name} {...p} href={`/engineering/${slug}`} index={i} />;
+            })}
           </div>
         </div>
       </section>
