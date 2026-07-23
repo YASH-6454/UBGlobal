@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiArrowLeft, FiUploadCloud, FiX, FiSave } from 'react-icons/fi';
 import Image from 'next/image';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ubglobal-api.onrender.com';
 
 export default function BlogsManager() {
   const [blogs, setBlogs] = useState([]);
