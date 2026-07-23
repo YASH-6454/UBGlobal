@@ -418,28 +418,35 @@ function BlogPreview({ blogs }) {
         />
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {blogs && blogs.map((post, i) => (
-            <motion.div key={post.slug} initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: i * 0.1 }}>
-              <Link href={`/blog/${post.slug}`} className="bg-white rounded-2xl overflow-hidden border border-surface-darker/40 group block h-full flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                <div className="relative h-48 overflow-hidden shrink-0">
-                  <Image src={post.image} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute top-4 left-4">
-                    <span className={`px-3 py-1 rounded-full text-[11px] font-bold ${getDivisionColor(post.category)}`}>
-                      {post.category}
-                    </span>
+          {blogs && blogs.map((post, i) => {
+            const imageSrc = post.image || '/images/hero-bg.png';
+            const postDate = post.date || post.created_at || new Date().toISOString();
+
+            return (
+              <motion.div key={post.slug || i} initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: i * 0.1 }}>
+                <Link href={`/blog/${post.slug}`} className="bg-white rounded-2xl overflow-hidden border border-surface-darker/40 group block h-full flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <div className="relative h-48 overflow-hidden shrink-0 bg-surface">
+                    <Image src={imageSrc} alt={post.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute top-4 left-4">
+                      <span className={`px-3 py-1 rounded-full text-[11px] font-bold ${getDivisionColor(post.category)}`}>
+                        {post.category || 'General'}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className="p-6 flex flex-col flex-1">
-                  <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-3 group-hover:text-eng transition-colors line-clamp-2">
-                    {post.title}
-                  </h3>
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-surface-darker/50 text-xs text-secondary-light">
-                    <div className="flex items-center gap-1.5"><FiCalendar /> {new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-3 group-hover:text-eng transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-surface-darker/50 text-xs text-secondary-light">
+                      <div className="flex items-center gap-1.5">
+                        <FiCalendar /> {new Date(postDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

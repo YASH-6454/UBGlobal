@@ -36,7 +36,7 @@ export default function ProductDetail({
     '@type': 'Product',
     name: productName,
     description: description,
-    image: `https://ubglobal.in${image}`,
+    image: image.startsWith('http') ? image : `https://ubglobal.in${image}`,
     brand: {
       '@type': 'Brand',
       name: 'United Brothers Global'
@@ -59,8 +59,8 @@ export default function ProductDetail({
       <section className="py-12 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }} className="relative h-[300px] sm:h-[400px] lg:h-[500px] rounded-3xl overflow-hidden border border-surface-darker/50 shadow-xl shadow-primary/5">
-              <Image src={image} alt={productName} fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 50vw" />
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }} className="relative h-[300px] sm:h-[400px] lg:h-[500px] rounded-3xl overflow-hidden border border-surface-darker/50 shadow-xl shadow-primary/5 bg-surface">
+              <Image src={image} alt={productName} fill className="object-contain p-4" priority sizes="(max-width: 1024px) 100vw, 50vw" />
             </motion.div>
             
             <motion.div initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.15 }}>

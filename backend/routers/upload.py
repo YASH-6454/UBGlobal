@@ -3,7 +3,7 @@ import shutil
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from dependencies import get_current_admin
-from r2 import upload_file_to_r2
+from cloud_storage import upload_image_to_cloudinary
 
 router = APIRouter(prefix="/api/upload", tags=["upload"])
 
@@ -15,7 +15,7 @@ async def upload_image(
     file: UploadFile = File(...),
     admin: dict = Depends(get_current_admin)
 ):
-    """Upload an image to R2 or fallback to local storage."""
+    """Upload an image to Cloudinary or fallback to local storage."""
     # Ensure it's an image
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
@@ -23,13 +23,13 @@ async def upload_image(
     ext = file.filename.split(".")[-1]
     unique_filename = f"{uuid.uuid4().hex}.{ext}"
     
-    # Try R2 first
+    # Try Cloudinary first
     try:
-        if os.getenv("CLOUDFLARE_ACCOUNT_ID"):
-            url = upload_file_to_r2(file.file, unique_filename, file.content_type)
+        if os.getenv("CLOUDINARY_CLOUD_NAME"):
+            url = upload_image_to_cloudinary(file.file, unique_filename)
             return {"url": url}
     except Exception as e:
-        print(f"[R2 ERROR] {e}. Falling back to local storage.")
+        print(f"[CLOUDINARY ERROR] {e}. Falling back to local storage.")
         
     # Fallback to local
     os.makedirs(UPLOAD_DIR, exist_ok=True)
