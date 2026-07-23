@@ -19,6 +19,12 @@ export default function ProductDetail({
   faqs = []
 }) {
   const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true });
+  const [imgSrc, setImgSrc] = useState(image || '/images/hero-bg.png');
+
+  useEffect(() => {
+    setImgSrc(image || '/images/hero-bg.png');
+  }, [image]);
+
 
   const colorMap = {
     engineering: { text: 'text-eng', bg: 'bg-eng', lightBg: 'bg-eng/10' },
@@ -60,7 +66,7 @@ export default function ProductDetail({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }} className="relative h-[300px] sm:h-[400px] lg:h-[500px] rounded-3xl overflow-hidden border border-surface-darker/50 shadow-xl shadow-primary/5 bg-surface">
-              <Image src={image} alt={productName} fill className="object-contain p-4" priority sizes="(max-width: 1024px) 100vw, 50vw" />
+              <Image src={imgSrc} alt={productName} fill className="object-contain p-4" priority sizes="(max-width: 1024px) 100vw, 50vw" onError={() => setImgSrc('/images/hero-bg.png')} />
             </motion.div>
             
             <motion.div initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.15 }}>
