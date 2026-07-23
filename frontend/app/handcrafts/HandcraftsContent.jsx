@@ -2,7 +2,6 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { FiArrowRight, FiCheckCircle, FiShield, FiTruck, FiHeart, FiX } from 'react-icons/fi';
 import SectionHeader from '../components/sections/SectionHeader';
 import CTABanner from '../components/sections/CTABanner';
@@ -14,18 +13,8 @@ import { useState, useEffect, useRef } from 'react';
 export default function HandcraftsContent() {
   const [heroRef, heroInView] = useInView({ threshold: 0.05, triggerOnce: true });
   const [products, setProducts] = useState([]);
-  const searchParams = useSearchParams();
-  const urlCategory = searchParams.get('category');
-  const [selectedCategory, setSelectedCategory] = useState(urlCategory || null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const productsRef = useRef(null);
-
-  // Sync with URL param on mount/change
-  useEffect(() => {
-    setSelectedCategory(urlCategory || null);
-    if (urlCategory && productsRef.current) {
-      setTimeout(() => productsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
-    }
-  }, [urlCategory]);
   
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/products?division=Handcrafts`)
