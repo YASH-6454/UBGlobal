@@ -16,14 +16,17 @@ export default function ProductCard({ name, image, description, href = "#", spec
         href={href}
         className="product-card bg-white rounded-2xl overflow-hidden border border-surface-darker/40 group cursor-pointer flex flex-col h-full block"
       >
-        <div className="relative h-48 overflow-hidden shrink-0">
-          <Image
-            src={image}
-            alt={name}
-            fill
-            sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw"
-            className="object-cover product-image transition-transform duration-700"
-          />
+        <div className="relative h-48 overflow-hidden shrink-0 bg-surface/80 flex items-center justify-center">
+          {image && <Image src={image} alt="" fill className="object-cover blur-md opacity-25 scale-110 pointer-events-none" aria-hidden="true" />}
+          {image && (
+            <Image
+              src={image}
+              alt={name}
+              fill
+              sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw"
+              className="object-contain p-3 product-image transition-transform duration-700 relative z-10"
+            />
+          )}
           <div className="product-overlay absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 transition-opacity duration-400 flex items-end justify-center pb-4">
             <span className="text-white text-sm font-semibold flex items-center gap-1">
               Learn More <FiArrowRight className="text-xs" />

@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiArrowRight, FiCheckCircle, FiShield, FiTruck, FiAward, FiX } from 'react-icons/fi';
 import SectionHeader from '../components/sections/SectionHeader';
 import CTABanner from '../components/sections/CTABanner';
@@ -126,10 +127,18 @@ export default function AgricultureContent() {
                 className="bg-white rounded-2xl p-6 border border-surface-darker/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
                 onClick={() => window.location.href = `/agriculture/${slug}`}
               >
-                <div className="flex items-start justify-between mb-3">
-                  <span className="text-4xl">{item.emoji}</span>
-                  <span className="px-2 py-0.5 bg-agri/10 text-agri text-[10px] font-bold rounded-full">{item.category}</span>
-                </div>
+                {item.image ? (
+                  <div className="relative h-40 mb-3 rounded-xl overflow-hidden bg-surface/80 flex items-center justify-center border border-surface-darker/30">
+                    <Image src={item.image} alt="" fill className="object-cover blur-md opacity-20 scale-110 pointer-events-none" aria-hidden="true" />
+                    <Image src={item.image} alt={item.name} fill className="object-contain p-2 relative z-10" sizes="300px" />
+                    {item.category && <span className="absolute top-2 right-2 px-2 py-0.5 bg-agri text-white text-[10px] font-bold rounded-full z-20 shadow-sm">{item.category}</span>}
+                  </div>
+                ) : (
+                  <div className="flex items-start justify-between mb-3">
+                    <span className="text-4xl">{item.emoji}</span>
+                    <span className="px-2 py-0.5 bg-agri/10 text-agri text-[10px] font-bold rounded-full">{item.category}</span>
+                  </div>
+                )}
                 <h3 className="text-base font-bold text-primary font-[family-name:var(--font-poppins)] mb-1 group-hover:text-agri transition-colors">{item.name}</h3>
                 <p className="text-secondary text-xs leading-relaxed mb-3">{item.desc || item.description}</p>
                 <div className="flex items-center gap-1.5 text-xs text-secondary-light">

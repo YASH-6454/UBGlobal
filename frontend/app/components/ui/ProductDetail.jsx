@@ -66,8 +66,9 @@ export default function ProductDetail({
       <section className="py-12 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }} className="relative h-[300px] sm:h-[400px] lg:h-[500px] rounded-3xl overflow-hidden border border-surface-darker/50 shadow-xl shadow-primary/5 bg-surface">
-              <Image src={imgSrc} alt={productName} fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 50vw" onError={() => setImgSrc('/images/hero-bg.png')} />
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }} className="relative h-[300px] sm:h-[400px] lg:h-[500px] rounded-3xl overflow-hidden border border-surface-darker/50 shadow-xl shadow-primary/5 bg-surface/80 flex items-center justify-center">
+              <Image src={imgSrc} alt="" fill className="object-cover blur-2xl opacity-30 scale-110 pointer-events-none" aria-hidden="true" />
+              <Image src={imgSrc} alt={productName} fill className="object-contain p-4 sm:p-6 drop-shadow-md relative z-10" priority sizes="(max-width: 1024px) 100vw, 50vw" onError={() => setImgSrc('/images/hero-bg.png')} />
             </motion.div>
             
             <motion.div initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.15 }}>
