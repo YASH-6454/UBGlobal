@@ -107,7 +107,9 @@ export default function ProductsManager() {
         closeModal();
         fetchProducts();
       } else {
-        alert('Failed to save product');
+        const errorData = await res.text();
+        alert(`Failed to save product: ${errorData}`);
+        console.error(errorData);
       }
     } catch (err) {
       console.error(err);
