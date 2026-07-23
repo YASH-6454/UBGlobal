@@ -3,19 +3,23 @@ import cloudinary
 import cloudinary.uploader
 
 def configure_cloudinary():
-    """Ensure Cloudinary is configured with current environment variables."""
+    """Ensure Cloudinary is configured with clean environment variables."""
+    cloud_name = (os.getenv("CLOUDINARY_CLOUD_NAME") or "").strip().strip('"').strip("'")
+    api_key = (os.getenv("CLOUDINARY_API_KEY") or "").strip().strip('"').strip("'")
+    api_secret = (os.getenv("CLOUDINARY_API_SECRET") or "").strip().strip('"').strip("'")
+
     cloudinary.config(
-        cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-        api_key=os.getenv("CLOUDINARY_API_KEY"),
-        api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+        cloud_name=cloud_name,
+        api_key=api_key,
+        api_secret=api_secret,
         secure=True,
     )
 
 def upload_image_to_cloudinary(file_obj, filename: str) -> str:
     """Uploads a file to Cloudinary and returns the public URL."""
-    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME")
-    api_key = os.getenv("CLOUDINARY_API_KEY")
-    api_secret = os.getenv("CLOUDINARY_API_SECRET")
+    cloud_name = (os.getenv("CLOUDINARY_CLOUD_NAME") or "").strip().strip('"').strip("'")
+    api_key = (os.getenv("CLOUDINARY_API_KEY") or "").strip().strip('"').strip("'")
+    api_secret = (os.getenv("CLOUDINARY_API_SECRET") or "").strip().strip('"').strip("'")
 
     if not all([cloud_name, api_key, api_secret]):
         missing = []
