@@ -15,7 +15,7 @@ async def upload_image(
     file: UploadFile = File(...),
     admin: dict = Depends(get_current_admin)
 ):
-    """Upload an image to Cloudinary or fallback to local storage."""
+    """Upload an image to Cloudinary."""
     # Ensure it's an image
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
@@ -25,13 +25,15 @@ async def upload_image(
     
     # Try Cloudinary first
     try:
-        if os.getenv("CLOUDINARY_CLOUD_NAME"):
-            url = upload_image_to_cloudinary(file.file, unique_filename)
-            return {"url": url}
+        url = upload_image_to_cloudinary(file.file, unique_filename)
+        return {"url": url}
     except Exception as e:
-        print(f"[CLOUDINARY ERROR] {e}. Falling back to local storage.")
-        
-    # Fallback to local
+        print(f"[CLOUDINARY ERROR] {e}")
+        # If Cloudinary is missing or fails, report the error directly
+        if os.getenv("CLOUDINARY_CLOUD_NAME"):
+            raise HTTPException(status_code=500, detail=f"Cloudinary Upload Failed: {str(e)}")
+            
+    # Fallback to local only for local offline dev if CLOUDINARY_CLOUD_NAME is not set
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     file_path = os.path.join(UPLOAD_DIR, unique_filename)
     

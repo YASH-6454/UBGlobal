@@ -18,9 +18,16 @@ def upload_image_to_cloudinary(file_obj, filename: str) -> str:
     api_secret = os.getenv("CLOUDINARY_API_SECRET")
 
     if not all([cloud_name, api_key, api_secret]):
-        raise ValueError("Cloudinary credentials missing in environment variables")
+        missing = []
+        if not cloud_name: missing.append("CLOUDINARY_CLOUD_NAME")
+        if not api_key: missing.append("CLOUDINARY_API_KEY")
+        if not api_secret: missing.append("CLOUDINARY_API_SECRET")
+        raise ValueError(f"Missing Cloudinary env vars: {', '.join(missing)}")
 
     configure_cloudinary()
+
+    if hasattr(file_obj, "seek"):
+        file_obj.seek(0)
 
     # Use the filename (without extension) as the public_id for clean URLs
     public_id = os.path.splitext(filename)[0]
