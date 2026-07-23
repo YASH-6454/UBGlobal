@@ -2,17 +2,30 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
-import { FiArrowRight, FiCheckCircle, FiShield, FiTruck, FiHeart } from 'react-icons/fi';
+import { useSearchParams } from 'next/navigation';
+import { FiArrowRight, FiCheckCircle, FiShield, FiTruck, FiHeart, FiX } from 'react-icons/fi';
 import SectionHeader from '../components/sections/SectionHeader';
 import CTABanner from '../components/sections/CTABanner';
 import TestimonialCarousel from '../components/sections/TestimonialCarousel';
 import FAQSection from '../components/sections/FAQSection';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function HandcraftsContent() {
   const [heroRef, heroInView] = useInView({ threshold: 0.05, triggerOnce: true });
   const [products, setProducts] = useState([]);
+  const searchParams = useSearchParams();
+  const urlCategory = searchParams.get('category');
+  const [selectedCategory, setSelectedCategory] = useState(urlCategory || null);
+  const productsRef = useRef(null);
+
+  // Sync with URL param on mount/change
+  useEffect(() => {
+    setSelectedCategory(urlCategory || null);
+    if (urlCategory && productsRef.current) {
+      setTimeout(() => productsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    }
+  }, [urlCategory]);
   
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/products?division=Handcrafts`)
@@ -40,11 +53,21 @@ export default function HandcraftsContent() {
 
   const categories = Object.keys(categoryMap).map(cat => ({
     name: cat,
-    href: `/handcrafts?category=${encodeURIComponent(cat)}`,
     count: categoryMap[cat].length,
     emoji: categoryColors[cat]?.emoji || '📦',
     color: categoryColors[cat]?.color || 'bg-gray-50 border-gray-200 hover:bg-gray-100',
   }));
+
+  const handleCategoryClick = (catName) => {
+    setSelectedCategory(prev => prev === catName ? null : catName);
+    if (productsRef.current) {
+      setTimeout(() => productsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    }
+  };
+
+  const filteredProducts = selectedCategory
+    ? products.filter(p => (p.category || 'Other') === selectedCategory)
+    : products;
 
   return (
     <>
@@ -84,25 +107,33 @@ export default function HandcraftsContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {categories.map((cat, i) => (
-              <Link key={i} href={cat.href} className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 group ${cat.color}`}>
+              <button key={i} onClick={() => handleCategoryClick(cat.name)} className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 group text-left ${selectedCategory === cat.name ? 'ring-2 ring-craft shadow-lg scale-[1.02]' : ''} ${cat.color}`}>
                 <span className="text-3xl">{cat.emoji}</span>
                 <div>
                   <h3 className="font-bold text-primary font-[family-name:var(--font-poppins)] text-sm">{cat.name}</h3>
                   <p className="text-sm text-secondary">{cat.count} products</p>
                 </div>
                 <FiArrowRight className="ml-auto text-secondary group-hover:translate-x-1 transition-transform" />
-              </Link>
+              </button>
             ))}
           </div>
         </div>
       </section>
 
       {/* All Products Grid */}
-      <section className="py-20 sm:py-28 bg-surface">
+      <section className="py-20 sm:py-28 bg-surface" ref={productsRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader label="Our Products" title="Handcrafted" titleHighlight="Indian Artistry" highlightClass="text-gradient-craft" description="Traditional craftsmanship meets modern design — every piece tells a story of India's rich heritage." />
+          <SectionHeader label="Our Products" title="Handcrafted" titleHighlight={selectedCategory || 'Indian Artistry'} highlightClass="text-gradient-craft" description="Traditional craftsmanship meets modern design — every piece tells a story of India's rich heritage." />
+          {selectedCategory && (
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-sm text-secondary">Showing <strong className="text-primary">{filteredProducts.length}</strong> products in <strong className="text-craft">{selectedCategory}</strong></span>
+              <button onClick={() => setSelectedCategory(null)} className="inline-flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-700 bg-red-50 px-3 py-1.5 rounded-full transition-colors">
+                <FiX className="text-xs" /> Clear Filter
+              </button>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {products.map((item, i) => {
+            {filteredProducts.map((item, i) => {
               const slug = item.slug || item.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
               return (
               <motion.div key={item.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}
