@@ -1,6 +1,3 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import BreadcrumbNav from '../../components/layout/BreadcrumbNav';
@@ -8,50 +5,56 @@ import WhatsAppButton from '../../components/ui/WhatsAppButton';
 import ScrollToTop from '../../components/ui/ScrollToTop';
 import ProductDetail from '../../components/ui/ProductDetail';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+export const dynamic = 'force-dynamic';
 
-export default function EngineeringProductPage() {
-  const params = useParams();
-  const slug = params.slug;
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ubglobal-api.onrender.com';
 
-  useEffect(() => {
-    if (!slug) return;
-    fetch(`${API_URL}/api/products/by-slug/${slug}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Not found');
-        return res.json();
-      })
-      .then(data => {
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <main className="pt-[72px] min-h-screen flex items-center justify-center">
-          <div className="animate-pulse text-secondary">Loading product...</div>
-        </main>
-        <Footer />
-      </>
-    );
+async function getProduct(slug) {
+  try {
+    const res = await fetch(`${API_URL}/api/products/by-slug/${slug}`, { cache: 'no-store' });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.error('Error fetching product by slug:', err);
   }
 
-  if (error || !product) {
+  // Fallback: Try fetching all products and matching slug
+  try {
+    const res = await fetch(`${API_URL}/api/products`, { cache: 'no-store' });
+    if (res.ok) {
+      const products = await res.json();
+      const match = products.find(p => p.slug === slug || (p.name && p.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-') === slug));
+      if (match) return match;
+    }
+  } catch (err) {
+    console.error('Error fetching products list:', err);
+  }
+
+  return null;
+}
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+  if (!product) return { title: 'Product Not Found | United Brothers Global' };
+
+  return {
+    title: `${product.name} | United Brothers Global`,
+    description: product.description,
+  };
+}
+
+export default async function EngineeringProductPage({ params }) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+
+  if (!product) {
     return (
       <>
         <Navbar />
-        <main className="pt-[72px] min-h-screen flex flex-col items-center justify-center gap-4">
-          <h1 className="text-2xl font-bold text-primary">Product Not Found</h1>
+        <main className="pt-[72px] min-h-screen flex flex-col items-center justify-center gap-4 bg-white">
+          <h1 className="text-2xl font-bold text-primary font-[family-name:var(--font-poppins)]">Product Not Found</h1>
           <p className="text-secondary">The product you're looking for doesn't exist.</p>
           <a href="/engineering" className="text-eng font-semibold hover:underline">← Back to Engineering</a>
         </main>
@@ -63,7 +66,7 @@ export default function EngineeringProductPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-[72px]">
+      <main className="pt-[72px] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <BreadcrumbNav items={[{ name: 'Engineering', href: '/engineering' }, { name: product.name }]} />
         </div>

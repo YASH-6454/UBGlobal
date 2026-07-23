@@ -10,7 +10,7 @@ import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ubglobal-api.onrender.com';
 
 async function getBlogPost(slug) {
   try {
