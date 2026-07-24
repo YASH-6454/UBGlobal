@@ -215,7 +215,7 @@ function StorySection() {
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7 }}
-            className="relative"
+            className="relative pb-10"
           >
             <div className="relative bg-surface rounded-3xl p-8 sm:p-10 border border-surface-darker/40 overflow-hidden">
               {/* Decorative gradient blobs */}
@@ -265,7 +265,7 @@ function StorySection() {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.7 }}
-              className="absolute -bottom-6 -right-4 sm:-right-6 bg-white rounded-2xl p-5 shadow-xl shadow-primary/10 border border-surface-darker/30"
+              className="absolute -bottom-2 right-2 sm:right-4 bg-white rounded-2xl p-5 shadow-xl shadow-primary/10 border border-surface-darker/30 z-10"
             >
               <div className="text-3xl font-bold text-eng font-[family-name:var(--font-poppins)]">15+</div>
               <div className="text-primary font-semibold text-sm">Years Strong</div>
