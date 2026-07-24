@@ -37,6 +37,14 @@ const divisions = [
   { name: 'Handcrafts', icon: GiFlame, color: 'craft', href: '/handcrafts', description: 'Traditional Clay Diyas, Hand-Painted Decorative Diyas, Tea Light Holders & Pooja Accessories.' },
 ];
 
+/* Tailwind safelist — ensures dynamic color classes are NOT purged */
+const colorMap = {
+  eng:   { bg: 'bg-eng/10',   text: 'text-eng',   bgIcon: 'bg-eng/10' },
+  agri:  { bg: 'bg-agri/10',  text: 'text-agri',  bgIcon: 'bg-agri/10' },
+  it:    { bg: 'bg-it/10',    text: 'text-it',    bgIcon: 'bg-it/10' },
+  craft: { bg: 'bg-craft/10', text: 'text-craft', bgIcon: 'bg-craft/10' },
+};
+
 const stats = [
   { icon: FiAward, value: '15', suffix: '+', label: 'Years of Excellence', desc: 'Since 2009' },
   { icon: FiGlobe, value: '50', suffix: '+', label: 'Countries Reached', desc: 'Global network' },
@@ -147,7 +155,7 @@ function HeroSection() {
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.08 }}
                   className="flex items-center gap-2 bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] px-4 py-2.5 rounded-xl hover:bg-white/[0.1] transition-all cursor-default group"
                 >
-                  <b.icon className={`text-${b.color} text-sm group-hover:scale-110 transition-transform`} />
+                  <b.icon className={`${colorMap[b.color].text} text-sm group-hover:scale-110 transition-transform`} />
                   <span className="text-xs font-medium text-white/80">{b.text}</span>
                 </motion.div>
               ))}
@@ -239,8 +247,8 @@ function StorySection() {
                       transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
                       className="flex items-center gap-3 bg-white rounded-xl p-3.5 border border-surface-darker/30 group hover:shadow-md transition-all"
                     >
-                      <div className={`w-9 h-9 rounded-lg bg-${cert.color}/10 flex items-center justify-center shrink-0`}>
-                        <FiCheckCircle className={`text-${cert.color} text-base`} />
+                      <div className={`w-9 h-9 rounded-lg ${colorMap[cert.color].bg} flex items-center justify-center shrink-0`}>
+                        <FiCheckCircle className={`${colorMap[cert.color].text} text-base`} />
                       </div>
                       <div>
                         <div className="text-primary font-semibold text-sm">{cert.label}</div>
@@ -343,14 +351,14 @@ function DivisionsSection() {
             >
               <Link href={div.href} className={`block division-card ${div.color} bg-white rounded-2xl p-7 border border-surface-darker/40 group hover:shadow-xl hover:shadow-primary/5 h-full`}>
                 <div className="relative z-10">
-                  <div className={`w-14 h-14 bg-${div.color}/10 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                    <div.icon className={`text-${div.color} text-2xl`} />
+                  <div className={`w-14 h-14 ${colorMap[div.color].bg} rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                    <div.icon className={`${colorMap[div.color].text} text-2xl`} />
                   </div>
                   <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-2 group-hover:text-primary transition-colors">
                     {div.name}
                   </h3>
                   <p className="text-secondary text-sm leading-relaxed mb-4">{div.description}</p>
-                  <span className={`inline-flex items-center gap-1.5 text-${div.color} text-xs font-semibold group-hover:gap-2.5 transition-all`}>
+                  <span className={`inline-flex items-center gap-1.5 ${colorMap[div.color].text} text-xs font-semibold group-hover:gap-2.5 transition-all`}>
                     Explore
                     <FiChevronRight className="text-xs group-hover:translate-x-1 transition-transform" />
                   </span>
