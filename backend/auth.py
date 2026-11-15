@@ -1,4 +1,5 @@
 import os
+import secrets
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from jose import JWTError, jwt
@@ -7,9 +8,14 @@ from jose import JWTError, jwt
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # JWT Configuration
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "supersecretkey_please_change_in_production")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+if not SECRET_KEY:
+    # Never fall back to a guessable key. A random key keeps the API safe;
+    # admins will just need to log in again after each restart until the env var is set.
+    print("[SECURITY WARNING] JWT_SECRET_KEY is not set - using a random key for this process.")
+    SECRET_KEY = secrets.token_urlsafe(48)
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 days for admin
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 12  # 12 hours for admin
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)

@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
@@ -7,13 +7,17 @@ from dotenv import load_dotenv
 
 from database import connect_db, close_db, get_db
 from schemas import ContactCreate, ContactResponse, HealthResponse
+from dependencies import get_current_admin
+from ratelimit import check_rate_limit, client_ip
 
 load_dotenv()
 
 # Read config from .env
 APP_NAME = os.getenv("APP_NAME", "United Brothers Global API")
 APP_VERSION = os.getenv("APP_VERSION", "2.0.0")
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+ALLOWED_ORIGINS = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
+# Set ENABLE_DOCS=true locally if you want the interactive /docs page.
+ENABLE_DOCS = os.getenv("ENABLE_DOCS", "false").lower() == "true"
 
 
 @asynccontextmanager
@@ -29,15 +33,18 @@ app = FastAPI(
     description="Backend API for UBGlobal contact form and inquiries",
     version=APP_VERSION,
     lifespan=lifespan,
+    docs_url="/docs" if ENABLE_DOCS else None,
+    redoc_url="/redoc" if ENABLE_DOCS else None,
+    openapi_url="/openapi.json" if ENABLE_DOCS else None,
 )
 
 # CORS middleware — origins from .env
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,  # auth uses a Bearer header, not cookies
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
 )
 
 from routers import admin, cms, upload
@@ -59,16 +66,27 @@ async def health_check():
             "database": "connected",
         }
     except Exception as e:
+        print(f"[HEALTH] DB ping failed: {e}")
         return {
             "status": "degraded",
-            "message": f"API running but DB issue: {str(e)}",
+            "message": "API running but database is unreachable",
             "database": "disconnected",
         }
 
 
 @app.post("/contact", response_model=ContactResponse)
-async def create_contact(contact: ContactCreate):
+async def create_contact(contact: ContactCreate, request: Request):
     """Save a new contact inquiry to MongoDB."""
+    # Max 5 inquiries per IP per 10 minutes
+    check_rate_limit(f"contact:{client_ip(request)}", max_hits=5, window_seconds=600)
+
+    # Honeypot: real users never see/fill the hidden "website" field. Pretend success for bots.
+    if contact.website:
+        return ContactResponse(
+            id="0", name=contact.name, email=contact.email, phone=contact.phone,
+            message=contact.message, created_at=datetime.now(timezone.utc),
+        )
+
     db = get_db()
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
@@ -94,7 +112,7 @@ async def create_contact(contact: ContactCreate):
 
 
 @app.get("/contacts")
-async def list_contacts():
+async def list_contacts(admin: dict = Depends(get_current_admin)):
     """List all contact inquiries (admin endpoint)."""
     db = get_db()
     if db is None:

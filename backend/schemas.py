@@ -7,8 +7,9 @@ class ContactCreate(BaseModel):
     """Schema for creating a new contact inquiry."""
     name: str = Field(..., min_length=1, max_length=100)
     email: EmailStr
-    phone: Optional[str] = None
+    phone: Optional[str] = Field(None, max_length=40)
     message: str = Field(..., min_length=1, max_length=5000)
+    website: Optional[str] = Field(None, max_length=200)  # honeypot - must stay empty
 
 
 class ContactResponse(BaseModel):
@@ -39,6 +40,10 @@ class TokenData(BaseModel):
 class AdminCreate(BaseModel):
     username: str
     password: str
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str = Field(..., min_length=10, max_length=128)
 
 class AdminResponse(BaseModel):
     id: str

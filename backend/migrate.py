@@ -22,13 +22,17 @@ async def run_migration():
     client = AsyncIOMotorClient(MONGODB_URL)
     db = client[DATABASE_NAME]
     
-    # 1. Create Default Admin
+    # 1. Create initial admin (password must come from the environment - never hardcoded)
     admin_exists = await db.admins.find_one({"username": "admin"})
     if not admin_exists:
-        print("Creating default admin: admin / admin123")
+        initial_password = os.getenv("ADMIN_INITIAL_PASSWORD")
+        if not initial_password or len(initial_password) < 10:
+            print("Set ADMIN_INITIAL_PASSWORD (10+ chars) to create the admin user. Aborting.")
+            return
+        print("Creating admin user 'admin' with the password from ADMIN_INITIAL_PASSWORD")
         await db.admins.insert_one({
             "username": "admin",
-            "password": get_password_hash("admin123"),
+            "password": get_password_hash(initial_password),
             "created_at": datetime.now(timezone.utc)
         })
     else:
@@ -131,4 +135,10 @@ async def run_migration():
     client.close()
 
 if __name__ == "__main__":
+    # This script DELETES all banners, products and blogs and replaces them with demo data.
+    # It must never run against the live database by accident.
+    if "--i-understand-this-deletes-all-content" not in sys.argv:
+        print("Refusing to run: this wipes ALL banners, products and blogs and reseeds demo data.")
+        print("Re-run with --i-understand-this-deletes-all-content if you really mean it.")
+        sys.exit(1)
     asyncio.run(run_migration())

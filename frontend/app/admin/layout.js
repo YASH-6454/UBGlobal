@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { FiGrid, FiFileText, FiImage, FiMessageSquare, FiLogOut, FiHome } from 'react-icons/fi';
+import { FiGrid, FiFileText, FiImage, FiLogOut, FiHome, FiSettings } from 'react-icons/fi';
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }) {
     { name: 'Products', href: '/admin/products', icon: FiFileText },
     { name: 'Blogs', href: '/admin/blogs', icon: FiFileText },
     { name: 'Banners', href: '/admin/banners', icon: FiImage },
-    { name: 'Inquiries', href: '/admin/inquiries', icon: FiMessageSquare },
+    { name: 'Settings', href: '/admin/settings', icon: FiSettings },
   ];
 
   return (

@@ -26,6 +26,7 @@ export default function AdminLogin() {
         body: formData,
       });
 
+      if (res.status === 429) throw new Error('Too many login attempts. Please wait 15 minutes and try again.');
       if (!res.ok) throw new Error('Invalid credentials');
 
       const data = await res.json();

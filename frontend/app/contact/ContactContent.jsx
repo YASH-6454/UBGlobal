@@ -44,7 +44,7 @@ export default function ContactContent() {
     if (name === 'name') {
       if (!value.trim()) error = 'Full Name is required';
       else if (value.trim().length < 2) error = 'Name must be at least 2 characters';
-      else if (!/^[a-zA-Z\s'-]+$/.test(value.trim())) error = 'Name contains invalid characters';
+      else if (!/^[\p{L}\p{M}\s.'-]+$/u.test(value.trim())) error = 'Name contains invalid characters';
     } else if (name === 'email') {
       if (!value.trim()) error = 'Email Address is required';
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = 'Invalid email format';
@@ -106,6 +106,7 @@ export default function ContactContent() {
       const divLabel = DIVISIONS.find(d => d.value === form.division)?.label || form.division;
 
       // Send to backend API
+      const website = e.target.elements.website?.value || ''; // honeypot
       const backendRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -114,12 +115,14 @@ export default function ContactContent() {
           email: form.email,
           phone: fullPhone,
           message: `[Division: ${divLabel}] [Company: ${form.company || 'N/A'}] ${form.message}`,
+          website,
         }),
       }).catch(() => null);
+      let delivered = !!backendRes?.ok;
 
       // Also send via Web3Forms as backup
-      if (process.env.NEXT_PUBLIC_WEB3FORMS_KEY) {
-        await fetch('https://api.web3forms.com/submit', {
+      if (process.env.NEXT_PUBLIC_WEB3FORMS_KEY && !website) {
+        const backupRes = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
@@ -134,7 +137,11 @@ export default function ContactContent() {
             from_name: 'UB Global Website',
           }),
         }).catch(() => null);
+        if (backupRes?.ok) delivered = true;
       }
+
+      // Only tell the customer it worked if at least one channel actually received it
+      if (!delivered) throw new Error(`Inquiry not delivered (API status: ${backendRes?.status ?? 'network error'})`);
 
       setStatus('success');
       setForm({ name: '', email: '', countryCode: '+91', phone: '', division: '', company: '', message: '' });
@@ -211,6 +218,12 @@ export default function ContactContent() {
                 </div>
               </div>
 
+              {/* Honeypot: hidden from people, bots fill it in and get silently dropped */}
+              <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
+                <label htmlFor="contact-website">Website</label>
+                <input id="contact-website" type="text" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+              </div>
+
               <button type="submit" disabled={status === 'loading'}
                 className={`w-full py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-300 ${
                   status === 'success' ? 'bg-green-500 text-white' :
@@ -223,6 +236,11 @@ export default function ContactContent() {
                   status === 'error' ? <><FiAlertCircle /> Failed — Try Again</> :
                   <><FiSend /> Send Inquiry</>}
               </button>
+              {status === 'error' && (
+                <p role="alert" className="text-red-600 text-xs mt-3 text-center">
+                  We couldn&apos;t send your inquiry. Please try again, or email us at info@ubglobal.in / WhatsApp +91 7887799370.
+                </p>
+              )}
             </form>
           </motion.div>
 
