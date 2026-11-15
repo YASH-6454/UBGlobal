@@ -2,10 +2,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenu, HiX } from 'react-icons/hi';
-import { FiChevronDown, FiArrowRight } from 'react-icons/fi';
+import { FiChevronDown } from 'react-icons/fi';
 import { GiSteelClaws, GiWheat, GiProcessor, GiFlame } from 'react-icons/gi';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -61,7 +62,13 @@ const navLinks = [
   { name: 'Contact', href: '/contact' },
 ];
 
+const linkBase =
+  'relative px-3.5 py-2 text-[13px] font-medium tracking-wide transition-colors duration-200 after:absolute after:left-3.5 after:right-3.5 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-eng after:transition-transform after:duration-300 hover:after:scale-x-100';
+
 export default function Navbar() {
+  const pathname = usePathname();
+  const isActive = (href) => (href === '/' ? pathname === '/' : href !== '#' && pathname.startsWith(href));
+  const divisionActive = divisionDefs.some((d) => pathname.startsWith(d.href));
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
@@ -124,10 +131,10 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 bg-primary border-b transition-[border-color,box-shadow] duration-500 ${
           scrolled
-            ? 'bg-primary/95 backdrop-blur-xl shadow-2xl shadow-black/10 border-b border-white/5'
-            : 'bg-primary/90 backdrop-blur-md'
+            ? 'border-white/15 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.5)]'
+            : 'border-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[72px]">
@@ -143,13 +150,13 @@ export default function Navbar() {
                 priority
               />
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-white font-bold text-[15px] font-[family-name:var(--font-poppins)] leading-tight">
+            <div className="hidden sm:block border-l border-white/20 pl-3">
+              <span className="block text-white font-medium text-[17px] font-[family-name:var(--font-heading)] leading-none tracking-tight">
                 United Brothers
-              </h1>
-              <p className="text-eng text-[9px] font-semibold tracking-[0.18em] uppercase leading-none mt-0.5">
+              </span>
+              <span className="block text-white/55 text-[9px] font-medium tracking-[0.22em] uppercase leading-none mt-1.5">
                 Global Trade Solutions
-              </p>
+              </span>
             </div>
           </Link>
 
@@ -164,7 +171,7 @@ export default function Navbar() {
                   onMouseLeave={handleMegaLeave}
                 >
                   <button
-                    className="flex items-center gap-1 px-3.5 py-2 text-[13px] font-medium text-white/75 hover:text-white rounded-md transition-all duration-300 hover:bg-white/5"
+                    className={`${linkBase} flex items-center gap-1 ${divisionActive ? 'text-white after:scale-x-100' : 'text-white/70 hover:text-white'}`}
                     onClick={() => setMegaOpen(!megaOpen)}
                   >
                     {link.name}
@@ -181,12 +188,12 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[920px] bg-white rounded-2xl shadow-2xl shadow-black/15 border border-surface-darker/30 overflow-hidden"
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[920px] bg-white rounded-lg shadow-[var(--shadow-lift)] border border-surface-darker overflow-hidden"
                         onMouseEnter={handleMegaEnter}
                         onMouseLeave={handleMegaLeave}
                       >
                         <div className="p-6">
-                          <p className="text-xs font-semibold text-secondary tracking-[0.15em] uppercase mb-4">
+                          <p className="text-[11px] font-medium text-secondary tracking-[0.2em] uppercase mb-4 pb-3 border-b border-surface-darker">
                             Our Business Divisions
                           </p>
                           <div className="grid grid-cols-4 gap-4">
@@ -194,31 +201,26 @@ export default function Navbar() {
                               <div key={div.name} className="group">
                                 <Link
                                   href={div.href}
-                                  className="block p-4 rounded-xl hover:bg-surface transition-all duration-300"
+                                  className="block p-4 rounded-md hover:bg-surface transition-colors duration-300"
                                   onClick={() => setMegaOpen(false)}
                                 >
-                                  <div className={`w-10 h-10 ${div.bg} rounded-lg flex items-center justify-center mb-3`}>
-                                    <div.icon className={`text-lg ${div.color}`} />
-                                  </div>
-                                  <h3 className="text-sm font-bold text-primary font-[family-name:var(--font-poppins)] mb-1">
+                                  <div className="h-0.5 w-8 mb-4 transition-all duration-300 group-hover:w-14" style={{ background: div.accent }} />
+                                  <h3 className="text-base font-medium text-primary font-[family-name:var(--font-heading)] mb-1.5">
                                     {div.name}
                                   </h3>
-                                  <p className="text-xs text-secondary leading-relaxed mb-3">
+                                  <p className="text-xs text-secondary leading-relaxed mb-3 min-h-[3.75rem]">
                                     {div.description}
                                   </p>
                                 </Link>
-                                <div className="px-4 space-y-1">
+                                <div className="px-4 space-y-0.5">
                                   {div.links.map((sub) => (
                                     <Link
                                       key={sub.name}
                                       href={sub.href}
-                                      className="flex items-center gap-2 py-1.5 text-xs text-secondary hover:text-primary transition-colors group/link"
+                                      className="block py-1.5 text-xs text-secondary hover:text-primary hover:translate-x-1 transition-all duration-200"
                                       onClick={() => setMegaOpen(false)}
                                     >
-                                      <FiArrowRight className="text-[10px] opacity-0 -translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" />
-                                      <span className="group-hover/link:translate-x-0.5 transition-transform">
-                                        {sub.name}
-                                      </span>
+                                      {sub.name}
                                     </Link>
                                   ))}
                                 </div>
@@ -234,7 +236,8 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="px-3.5 py-2 text-[13px] font-medium text-white/75 hover:text-white rounded-md transition-all duration-300 hover:bg-white/5"
+                  className={`${linkBase} ${isActive(link.href) ? 'text-white after:scale-x-100' : 'text-white/70 hover:text-white'}`}
+                  aria-current={isActive(link.href) ? 'page' : undefined}
                 >
                   {link.name}
                 </Link>
@@ -246,7 +249,7 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <Link
               href="/contact"
-              className="hidden lg:inline-flex gradient-eng text-white px-5 py-2 rounded-lg text-[13px] font-semibold hover:shadow-lg hover:shadow-eng/25 transition-all duration-300 hover:-translate-y-0.5"
+              className="hidden lg:inline-flex items-center gap-2 bg-eng text-primary-dark px-5 py-2.5 rounded-md text-[13px] font-semibold hover:bg-eng-light transition-colors duration-200"
             >
               Get Quote
             </Link>
@@ -284,7 +287,7 @@ export default function Navbar() {
                   <div className="relative w-[70px] h-[40px]">
                     <Image src="/images/logo-icon.png" alt="UBG" fill className="object-contain brightness-0 invert" sizes="70px" />
                   </div>
-                  <span className="text-white font-bold text-base font-[family-name:var(--font-poppins)]">Menu</span>
+                  <span className="text-white font-medium text-lg font-[family-name:var(--font-heading)]">Menu</span>
                 </div>
                 <button onClick={() => setMobileOpen(false)} className="text-white/60 hover:text-white p-1.5 rounded-lg hover:bg-white/10">
                   <HiX size={20} />
@@ -366,7 +369,7 @@ export default function Navbar() {
                 <Link
                   href="/contact"
                   onClick={() => setMobileOpen(false)}
-                  className="block gradient-eng text-white text-center py-3 rounded-lg font-semibold text-sm"
+                  className="block bg-eng text-primary-dark text-center py-3 rounded-md font-semibold text-sm hover:bg-eng-light transition-colors"
                 >
                   Get Quote
                 </Link>
