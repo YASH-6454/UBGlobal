@@ -487,3 +487,124 @@
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ─── Brand loader (logo animation) ─── */
+.brand-loader {
+  --bl-w: min(280px, 64vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+}
+.brand-loader--sm { --bl-w: min(200px, 56vw); gap: 1.2rem; }
+.brand-loader__mark {
+  position: relative;
+  width: var(--bl-w);
+  aspect-ratio: 520 / 239;
+  animation:
+    brand-in 1s cubic-bezier(0.22, 1, 0.36, 1) both,
+    brand-float 3.4s ease-in-out 1s infinite;
+}
+/* Soft pulsing glow behind the logo */
+.brand-loader__mark::before {
+  content: "";
+  position: absolute;
+  left: 48.5%;
+  top: 42%;
+  width: 70%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.28) 0%, rgba(10, 31, 68, 0.1) 45%, transparent 70%);
+  filter: blur(14px);
+  z-index: 0;
+  animation: brand-glow 2.4s ease-in-out 0.4s infinite;
+}
+.brand-loader__mark img { position: relative; z-index: 1; width: 100%; height: auto; display: block; }
+/* Orbit ring sitting around the globe in the logo */
+.brand-loader__ring {
+  position: absolute;
+  left: 48.5%;
+  top: 42%;
+  width: 36%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0 40%, rgba(10, 31, 68, 0.55) 70%, #F97316 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  animation: brand-orbit 1.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  z-index: 0;
+}
+/* Faint counter-rotating dashed ring for depth */
+.brand-loader__ring::after {
+  content: "";
+  position: absolute;
+  inset: -9%;
+  border-radius: 50%;
+  border: 1px dashed rgba(10, 31, 68, 0.28);
+  animation: brand-orbit-rev 7s linear infinite;
+}
+/* Shine that sweeps across the logo shape only */
+.brand-loader__shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  -webkit-mask: url(/images/logo-loader.webp) center / 100% 100% no-repeat;
+  mask: url(/images/logo-loader.webp) center / 100% 100% no-repeat;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.9) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  animation: brand-shine 2.2s ease-in-out 0.6s infinite;
+}
+.brand-loader__bar {
+  width: calc(var(--bl-w) * 0.7);
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(10, 31, 68, 0.1);
+  overflow: hidden;
+}
+.brand-loader__bar span {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #0A1F44, #F97316);
+  animation: brand-bar 1.3s ease-in-out infinite;
+}
+@keyframes brand-in {
+  0% { opacity: 0; transform: scale(0.82) translateY(14px); filter: blur(10px); }
+  60% { filter: blur(0); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes brand-float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5px) scale(1.025); } }
+@keyframes brand-glow { 0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); } }
+@keyframes brand-orbit { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes brand-orbit-rev { to { transform: rotate(-360deg); } }
+@keyframes brand-shine { 0% { background-position: 130% 0; } 60%, 100% { background-position: -30% 0; } }
+@keyframes brand-bar { 0% { transform: translateX(-110%); } 100% { transform: translateX(260%); } }
+
+/* Splash overlay (first visit per session) */
+#ubg-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 42%, #ffffff 0%, #F1F5F9 70%, #E2E8F0 100%);
+  transition: opacity 0.6s ease, visibility 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Safety net: if JS never runs, hide by itself after 4.5s */
+  animation: splash-failsafe 0s linear 4.5s forwards;
+}
+#ubg-splash[data-hide="true"] { opacity: 0; visibility: hidden; transform: scale(1.06); }
+html.splash-skip #ubg-splash { display: none; }
+@keyframes splash-failsafe { to { opacity: 0; visibility: hidden; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-loader__mark, .brand-loader__mark::before, .brand-loader__shine, .brand-loader__ring, .brand-loader__ring::after { animation: none; }
+  .brand-loader__shine { display: none; }
+  .brand-loader__bar span { animation: none; width: 100%; }
+  #ubg-splash { transition: none; }
+}

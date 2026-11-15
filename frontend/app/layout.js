@@ -1,5 +1,6 @@
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import SplashScreen from "./components/ui/SplashScreen";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -136,8 +137,16 @@ export default function RootLayout({ children }) {
     <html
       lang="en"
       className={`${inter.variable} ${poppins.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
+        {/* Skip the splash for repeat visits in this session and for /admin */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{if(sessionStorage.getItem('ubg_splash_seen')||location.pathname.indexOf('/admin')===0){document.documentElement.classList.add('splash-skip')}}catch(e){}",
+          }}
+        />
+        <noscript><style>{"#ubg-splash{display:none!important}"}</style></noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -151,7 +160,10 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <SplashScreen />
+        {children}
+      </body>
     </html>
   );
 }
