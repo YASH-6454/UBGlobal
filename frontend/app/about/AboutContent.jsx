@@ -121,7 +121,7 @@ function HeroSection() {
               <span className="text-white/70 text-xs font-medium tracking-wide uppercase">About United Brothers Global</span>
             </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mt-2 mb-6 font-[family-name:var(--font-poppins)] leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mt-2 mb-6 font-[family-name:var(--font-heading)] leading-[1.1]">
               Your Trusted{' '}
               <span className="relative inline-block">
                 <span className="text-gradient-eng">Partner</span>
@@ -137,7 +137,7 @@ function HeroSection() {
 
             <p className="text-white/55 text-base sm:text-lg leading-relaxed mb-8 max-w-xl">
               A diversified trading and services company headquartered in Mumbai, India.
-              With over 15 years of industry experience, we've built trust across
+              With over 15 years of industry experience, we&apos;ve built trust across
               Engineering Materials, Agriculture Exports, Handcrafts & IT Services — serving 50+ countries worldwide.
             </p>
 
@@ -228,7 +228,7 @@ function StorySection() {
                     <FiMapPin className="text-white text-lg" />
                   </div>
                   <div>
-                    <div className="text-primary font-bold text-base font-[family-name:var(--font-poppins)]">Mumbai, India</div>
+                    <div className="text-primary font-bold text-base font-[family-name:var(--font-heading)]">Mumbai, India</div>
                     <div className="text-secondary text-xs">Global Headquarters</div>
                   </div>
                 </div>
@@ -268,7 +268,7 @@ function StorySection() {
             transition={{ duration: 0.7, delay: 0.15 }}
           >
             <span className="text-eng font-semibold text-xs tracking-[0.2em] uppercase">Our Story</span>
-            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-primary mt-3 mb-5 font-[family-name:var(--font-poppins)] leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-primary mt-3 mb-5 font-[family-name:var(--font-heading)] leading-tight">
               Building Bridges Across{' '}
               <span className="text-gradient-eng">Continents</span>
             </h2>
@@ -299,7 +299,7 @@ function StorySection() {
                   transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
                   className="text-center bg-surface rounded-xl p-4 border border-surface-darker/30"
                 >
-                  <div className="text-2xl font-bold text-eng font-[family-name:var(--font-poppins)]">{s.value}</div>
+                  <div className="text-2xl font-bold text-eng font-[family-name:var(--font-heading)]">{s.value}</div>
                   <div className="text-secondary text-xs font-medium mt-0.5">{s.label}</div>
                 </motion.div>
               ))}
@@ -342,7 +342,7 @@ function DivisionsSection() {
                   <div className={`w-14 h-14 ${colorMap[div.color].bg} rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
                     <div.icon className={`${colorMap[div.color].text} text-2xl`} />
                   </div>
-                  <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-heading)] mb-2 group-hover:text-primary transition-colors">
                     {div.name}
                   </h3>
                   <p className="text-secondary text-sm leading-relaxed mb-4">{div.description}</p>
@@ -389,7 +389,7 @@ function ValuesSection() {
                 <div className="w-16 h-16 mx-auto bg-primary/5 rounded-2xl flex items-center justify-center mb-5 group-hover:bg-white/20 transition-all duration-300 group-hover:scale-110">
                   <v.icon className="text-primary text-2xl group-hover:text-white transition-colors duration-300" />
                 </div>
-                <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-3 group-hover:text-white transition-colors duration-300">
+                <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-heading)] mb-3 group-hover:text-white transition-colors duration-300">
                   {v.title}
                 </h3>
                 <p className="text-secondary text-sm leading-relaxed group-hover:text-white/80 transition-colors duration-300">
@@ -460,7 +460,7 @@ function TimelineSection() {
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-eng font-bold text-xs tracking-wide bg-eng/15 px-3 py-1 rounded-full">{item.year}</span>
                 </div>
-                <h3 className={`text-lg font-bold font-[family-name:var(--font-poppins)] mb-1.5 transition-colors duration-300 ${
+                <h3 className={`text-lg font-bold font-[family-name:var(--font-heading)] mb-1.5 transition-colors duration-300 ${
                   activeIndex === i ? 'text-white' : 'text-white/90'
                 }`}>
                   {item.title}
@@ -514,7 +514,7 @@ function WhyChooseSection() {
                 <r.icon className="text-white text-lg" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-primary font-[family-name:var(--font-poppins)] mb-1.5">{r.title}</h3>
+                <h3 className="text-base font-bold text-primary font-[family-name:var(--font-heading)] mb-1.5">{r.title}</h3>
                 <p className="text-secondary text-sm leading-relaxed">{r.description}</p>
               </div>
             </motion.div>
@@ -551,12 +551,12 @@ function CTASection() {
             >
               Start Today
             </motion.span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 mb-5 font-[family-name:var(--font-poppins)] leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 mb-5 font-[family-name:var(--font-heading)] leading-tight">
               Ready to Partner with Us?
             </h2>
             <p className="text-white/50 text-base max-w-2xl mx-auto mb-8">
               Whether you need engineering materials, fresh agricultural products, handcrafted items, or IT solutions —
-              we're here to deliver excellence to your doorstep.
+              we&apos;re here to deliver excellence to your doorstep.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/contact" className="gradient-eng text-white px-8 py-4 rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-eng/30 transition-all hover:-translate-y-0.5 flex items-center gap-2 group">

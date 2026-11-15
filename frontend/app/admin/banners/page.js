@@ -15,7 +15,7 @@ export default function BannersManager() {
     fetchBanners();
   }, []);
 
-  const fetchBanners = async () => {
+  async function fetchBanners() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/banners`);
       const data = await res.json();
@@ -124,7 +124,7 @@ export default function BannersManager() {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-primary font-[family-name:var(--font-poppins)]">Banners Manager</h1>
+        <h1 className="text-3xl font-bold text-primary font-[family-name:var(--font-heading)]">Banners Manager</h1>
         <button onClick={openAddModal} className="flex items-center gap-2 bg-eng text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-eng-dark transition-colors">
           <FiPlus /> Add Banner
         </button>

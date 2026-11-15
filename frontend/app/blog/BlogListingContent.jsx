@@ -95,7 +95,7 @@ export default function BlogListingContent() {
                       </div>
                     </div>
                     <div className="p-6 flex flex-col flex-1">
-                      <h3 className="text-xl font-bold text-primary font-[family-name:var(--font-poppins)] mb-3 group-hover:text-eng transition-colors line-clamp-2">
+                      <h3 className="text-xl font-bold text-primary font-[family-name:var(--font-heading)] mb-3 group-hover:text-eng transition-colors line-clamp-2">
                         {post.title}
                       </h3>
                       <p className="text-secondary text-sm leading-relaxed mb-5 flex-1 line-clamp-3">

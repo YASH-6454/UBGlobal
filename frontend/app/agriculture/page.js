@@ -15,7 +15,7 @@ export default function AgriculturePage() {
   return (
     <>
       <Navbar />
-      <main className="pt-[72px]">
+      <main data-division="agri" className="pt-[72px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <BreadcrumbNav items={[{ name: 'Fruits & Vegetables' }]} />
         </div>

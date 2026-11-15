@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import BreadcrumbNav from '../../components/layout/BreadcrumbNav';
@@ -53,10 +54,10 @@ export default async function ITProductPage({ params }) {
     return (
       <>
         <Navbar />
-        <main className="pt-[72px] min-h-screen flex flex-col items-center justify-center gap-4 bg-white">
-          <h1 className="text-2xl font-bold text-primary font-[family-name:var(--font-poppins)]">Service Not Found</h1>
-          <p className="text-secondary">The service you're looking for doesn't exist.</p>
-          <a href="/it-services" className="text-it font-semibold hover:underline">← Back to IT Services</a>
+        <main data-division="it" className="pt-[72px] min-h-screen flex flex-col items-center justify-center gap-4 bg-white">
+          <h1 className="text-2xl font-bold text-primary font-[family-name:var(--font-heading)]">Service Not Found</h1>
+          <p className="text-secondary">The service you&apos;re looking for doesn&apos;t exist.</p>
+          <Link href="/it-services" className="text-it font-semibold hover:underline">← Back to IT Services</Link>
         </main>
         <Footer />
       </>
@@ -66,7 +67,7 @@ export default async function ITProductPage({ params }) {
   return (
     <>
       <Navbar />
-      <main className="pt-[72px] bg-white">
+      <main data-division="it" className="pt-[72px] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <BreadcrumbNav items={[{ name: 'IT Services', href: '/it-services' }, { name: product.name }]} />
         </div>

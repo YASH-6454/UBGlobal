@@ -17,7 +17,7 @@ export default function ProductsManager() {
     fetchProducts();
   }, []);
 
-  const fetchProducts = async () => {
+  async function fetchProducts() {
     try {
       const res = await fetch(`${API_URL}/api/products`);
       const data = await res.json();
@@ -133,7 +133,7 @@ export default function ProductsManager() {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-primary font-[family-name:var(--font-poppins)]">Products Manager</h1>
+        <h1 className="text-3xl font-bold text-primary font-[family-name:var(--font-heading)]">Products Manager</h1>
         <button onClick={openAddModal} className="flex items-center gap-2 bg-eng text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-eng-dark transition-colors">
           <FiPlus /> Add Product
         </button>

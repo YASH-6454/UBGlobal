@@ -70,7 +70,7 @@ export default function HandcraftsContent() {
               <span className="w-1.5 h-1.5 bg-craft rounded-full" />
               <span className="text-craft text-xs font-semibold tracking-wide">Handcrafts Division</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] font-[family-name:var(--font-poppins)] mb-5">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] font-[family-name:var(--font-heading)] mb-5">
               Artisan <span className="text-gradient-craft">Handcrafted Products</span> from India
             </h1>
             <p className="text-white/60 text-base sm:text-lg leading-relaxed mb-6">
@@ -100,7 +100,7 @@ export default function HandcraftsContent() {
               <button key={i} onClick={() => handleCategoryClick(cat.name)} className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 group text-left ${selectedCategory === cat.name ? 'ring-2 ring-craft shadow-lg scale-[1.02]' : ''} ${cat.color}`}>
                 <span className="text-3xl">{cat.emoji}</span>
                 <div>
-                  <h3 className="font-bold text-primary font-[family-name:var(--font-poppins)] text-sm">{cat.name}</h3>
+                  <h3 className="font-bold text-primary font-[family-name:var(--font-heading)] text-sm">{cat.name}</h3>
                   <p className="text-sm text-secondary">{cat.count} products</p>
                 </div>
                 <FiArrowRight className="ml-auto text-secondary group-hover:translate-x-1 transition-transform" />
@@ -142,7 +142,7 @@ export default function HandcraftsContent() {
                     <span className="px-2 py-0.5 bg-craft/10 text-craft text-[10px] font-bold rounded-full">{item.category}</span>
                   </div>
                 )}
-                <h3 className="text-base font-bold text-primary font-[family-name:var(--font-poppins)] mb-1 group-hover:text-craft transition-colors">{item.name}</h3>
+                <h3 className="text-base font-bold text-primary font-[family-name:var(--font-heading)] mb-1 group-hover:text-craft transition-colors">{item.name}</h3>
                 <p className="text-secondary text-xs leading-relaxed mb-3">{item.desc || item.description}</p>
                 <div className="flex items-center gap-1.5 text-xs text-secondary-light">
                   <span className="w-1.5 h-1.5 bg-craft rounded-full" />

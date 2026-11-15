@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { FiGrid, FiFileText, FiImage, FiLogOut, FiHome, FiSettings } from 'react-icons/fi';
@@ -7,22 +7,18 @@ import { FiGrid, FiFileText, FiImage, FiLogOut, FiHome, FiSettings } from 'react
 export default function AdminLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const isLogin = pathname === '/admin/login';
+  // undefined on the server / first render, then the token string ('' when absent)
+  const token = useSyncExternalStore(
+    () => () => {},
+    () => localStorage.getItem('admin_token') || '',
+    () => undefined
+  );
+  const isAuthorized = isLogin || !!token;
 
   useEffect(() => {
-    // If it's the login page, don't enforce layout auth
-    if (pathname === '/admin/login') {
-      setIsAuthorized(true);
-      return;
-    }
-
-    const token = localStorage.getItem('admin_token');
-    if (!token) {
-      router.push('/admin/login');
-    } else {
-      setIsAuthorized(true);
-    }
-  }, [pathname, router]);
+    if (!isLogin && token === '') router.push('/admin/login');
+  }, [isLogin, token, router]);
 
   if (!isAuthorized) return <div className="min-h-screen bg-surface flex items-center justify-center"><div className="loader-ring w-8 h-8"/></div>;
 
@@ -48,7 +44,7 @@ export default function AdminLayout({ children }) {
       {/* Sidebar */}
       <aside className="w-64 bg-primary text-white fixed h-full hidden md:flex flex-col">
         <div className="p-6">
-          <span className="text-2xl font-bold font-[family-name:var(--font-poppins)]">UBGlobal Admin</span>
+          <span className="text-2xl font-bold font-[family-name:var(--font-heading)]">UBGlobal Admin</span>
         </div>
         
         <nav className="flex-1 px-4 mt-6 space-y-2">

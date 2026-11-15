@@ -93,7 +93,7 @@ export default async function BlogPostPage({ params }) {
             <span className={`inline-block px-3 py-1 rounded-full text-[11px] font-bold mb-4 ${getDivisionColor(post.category)}`}>
               {post.category || 'General'}
             </span>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-6 font-[family-name:var(--font-poppins)] leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-6 font-[family-name:var(--font-heading)] leading-tight">
               {post.title}
             </h1>
             <div className="flex items-center gap-6 text-sm text-secondary-light border-b border-surface-darker/50 pb-6">
@@ -121,13 +121,13 @@ export default async function BlogPostPage({ params }) {
             {(post.content || '').split('\n\n').map((paragraph, i) => {
               const trimmed = paragraph.trim();
               if (trimmed.startsWith('###')) {
-                return <h3 key={i} className="text-2xl font-bold text-primary mt-8 mb-4 font-[family-name:var(--font-poppins)]">{trimmed.replace(/^###\s*/, '')}</h3>
+                return <h3 key={i} className="text-2xl font-bold text-primary mt-8 mb-4 font-[family-name:var(--font-heading)]">{trimmed.replace(/^###\s*/, '')}</h3>
               }
               if (trimmed.startsWith('##')) {
-                return <h2 key={i} className="text-3xl font-bold text-primary mt-8 mb-4 font-[family-name:var(--font-poppins)]">{trimmed.replace(/^##\s*/, '')}</h2>
+                return <h2 key={i} className="text-3xl font-bold text-primary mt-8 mb-4 font-[family-name:var(--font-heading)]">{trimmed.replace(/^##\s*/, '')}</h2>
               }
               if (trimmed.startsWith('#')) {
-                return <h1 key={i} className="text-4xl font-bold text-primary mt-8 mb-4 font-[family-name:var(--font-poppins)]">{trimmed.replace(/^#\s*/, '')}</h1>
+                return <h1 key={i} className="text-4xl font-bold text-primary mt-8 mb-4 font-[family-name:var(--font-heading)]">{trimmed.replace(/^#\s*/, '')}</h1>
               }
               if (trimmed.startsWith('*')) {
                 return (

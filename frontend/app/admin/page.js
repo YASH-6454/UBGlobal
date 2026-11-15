@@ -45,7 +45,7 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-primary font-[family-name:var(--font-poppins)] mb-8">Dashboard Overview</h1>
+      <h1 className="text-3xl font-bold text-primary font-[family-name:var(--font-heading)] mb-8">Dashboard Overview</h1>
       
       {loading ? (
         <div className="flex justify-center p-10"><div className="loader-ring w-8 h-8" /></div>

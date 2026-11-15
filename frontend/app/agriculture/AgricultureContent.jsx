@@ -67,7 +67,7 @@ export default function AgricultureContent() {
               <span className="w-1.5 h-1.5 bg-agri rounded-full" />
               <span className="text-agri text-xs font-semibold tracking-wide">Agriculture Division</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] font-[family-name:var(--font-poppins)] mb-5">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] font-[family-name:var(--font-heading)] mb-5">
               Fresh Indian <span className="text-gradient-agri">Fruits & Vegetables</span> for the World
             </h1>
             <p className="text-white/60 text-base sm:text-lg leading-relaxed mb-6">
@@ -97,7 +97,7 @@ export default function AgricultureContent() {
               <button key={i} onClick={() => handleCategoryClick(cat.name)} className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 group text-left ${selectedCategory === cat.name ? 'ring-2 ring-agri shadow-lg scale-[1.02]' : ''} ${cat.color}`}>
                 <span className="text-3xl">{cat.emoji}</span>
                 <div>
-                  <h3 className="font-bold text-primary font-[family-name:var(--font-poppins)]">{cat.name}</h3>
+                  <h3 className="font-bold text-primary font-[family-name:var(--font-heading)]">{cat.name}</h3>
                   <p className="text-sm text-secondary">{cat.count} products</p>
                 </div>
                 <FiArrowRight className="ml-auto text-secondary group-hover:translate-x-1 transition-transform" />
@@ -139,7 +139,7 @@ export default function AgricultureContent() {
                     <span className="px-2 py-0.5 bg-agri/10 text-agri text-[10px] font-bold rounded-full">{item.category}</span>
                   </div>
                 )}
-                <h3 className="text-base font-bold text-primary font-[family-name:var(--font-poppins)] mb-1 group-hover:text-agri transition-colors">{item.name}</h3>
+                <h3 className="text-base font-bold text-primary font-[family-name:var(--font-heading)] mb-1 group-hover:text-agri transition-colors">{item.name}</h3>
                 <p className="text-secondary text-xs leading-relaxed mb-3">{item.desc || item.description}</p>
                 <div className="flex items-center gap-1.5 text-xs text-secondary-light">
                   <span className="w-1.5 h-1.5 bg-agri rounded-full" />

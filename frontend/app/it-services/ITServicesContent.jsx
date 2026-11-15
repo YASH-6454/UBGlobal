@@ -82,7 +82,7 @@ export default function ITServicesContent() {
               <span className="w-1.5 h-1.5 bg-it rounded-full" />
               <span className="text-it text-xs font-semibold tracking-wide">IT Services Division</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] font-[family-name:var(--font-poppins)] mb-5">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] font-[family-name:var(--font-heading)] mb-5">
               Digital Solutions That <span className="text-gradient-it">Drive Growth</span>
             </h1>
             <p className="text-white/60 text-base sm:text-lg leading-relaxed mb-8">
@@ -108,7 +108,7 @@ export default function ITServicesContent() {
                   <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${s.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg`}>
                     <s.icon className="text-white text-xl" />
                   </div>
-                  <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-2 group-hover:text-it transition-colors">{s.title}</h3>
+                  <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-heading)] mb-2 group-hover:text-it transition-colors">{s.title}</h3>
                   <p className="text-secondary text-sm leading-relaxed mb-4 flex-1">{s.description}</p>
                   <div className="grid grid-cols-2 gap-2 mb-4">
                     {s.features.map((f, j) => (
@@ -138,8 +138,8 @@ export default function ITServicesContent() {
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.1 }}
                 className="relative bg-surface rounded-2xl p-6 border border-surface-darker/40 text-center group hover:shadow-lg transition-all"
               >
-                <div className="text-4xl font-extrabold text-it/10 font-[family-name:var(--font-poppins)] mb-2 group-hover:text-it/20 transition-colors">{p.step}</div>
-                <h3 className="text-base font-bold text-primary font-[family-name:var(--font-poppins)] mb-2">{p.title}</h3>
+                <div className="text-4xl font-extrabold text-it/10 font-[family-name:var(--font-heading)] mb-2 group-hover:text-it/20 transition-colors">{p.step}</div>
+                <h3 className="text-base font-bold text-primary font-[family-name:var(--font-heading)] mb-2">{p.title}</h3>
                 <p className="text-secondary text-sm leading-relaxed">{p.desc}</p>
               </motion.div>
             ))}

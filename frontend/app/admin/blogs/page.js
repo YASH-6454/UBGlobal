@@ -19,7 +19,7 @@ export default function BlogsManager() {
     fetchBlogs();
   }, []);
 
-  const fetchBlogs = async () => {
+  async function fetchBlogs() {
     try {
       const res = await fetch(`${API_URL}/api/blogs`);
       const data = await res.json();
@@ -170,7 +170,7 @@ export default function BlogsManager() {
                   }));
                 }}
                 placeholder="Article title..."
-                className="w-full text-2xl sm:text-3xl font-bold text-primary placeholder:text-secondary-light/50 bg-transparent border-0 outline-none font-[family-name:var(--font-poppins)]"
+                className="w-full text-2xl sm:text-3xl font-bold text-primary placeholder:text-secondary-light/50 bg-transparent border-0 outline-none font-[family-name:var(--font-heading)]"
               />
               <input
                 type="text"
@@ -299,7 +299,7 @@ export default function BlogsManager() {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-primary font-[family-name:var(--font-poppins)]">Blog Manager</h1>
+        <h1 className="text-3xl font-bold text-primary font-[family-name:var(--font-heading)]">Blog Manager</h1>
         <button onClick={openNewEditor} className="flex items-center gap-2 bg-eng text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-eng-dark transition-colors">
           <FiPlus /> New Post
         </button>

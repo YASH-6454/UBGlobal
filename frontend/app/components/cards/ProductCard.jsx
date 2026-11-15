@@ -34,7 +34,7 @@ export default function ProductCard({ name, image, description, href = "#", spec
           </div>
         </div>
         <div className="p-5 flex flex-col flex-1">
-          <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-2 group-hover:text-eng transition-colors">
+          <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-heading)] mb-2 group-hover:text-eng transition-colors">
             {name}
           </h3>
           <p className="text-secondary text-sm leading-relaxed mb-4 flex-1">

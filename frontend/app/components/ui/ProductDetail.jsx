@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Image from 'next/image';
@@ -20,11 +20,9 @@ export default function ProductDetail({
   faqs = []
 }) {
   const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true });
-  const [imgSrc, setImgSrc] = useState(image || '/images/hero-bg.png');
-
-  useEffect(() => {
-    setImgSrc(image || '/images/hero-bg.png');
-  }, [image]);
+  // Remember which image failed to load; fall back to the default for that one only
+  const [failedSrc, setFailedSrc] = useState(null);
+  const imgSrc = image && image !== failedSrc ? image : '/images/hero-bg.png';
 
 
   const colorMap = {
@@ -68,7 +66,7 @@ export default function ProductDetail({
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }} className="relative h-[300px] sm:h-[400px] lg:h-[500px] rounded-3xl overflow-hidden border border-surface-darker/50 shadow-xl shadow-primary/5 bg-surface/80 flex items-center justify-center">
               <Image src={imgSrc} alt="" fill className="object-cover blur-2xl opacity-30 scale-110 pointer-events-none" aria-hidden="true" />
-              <Image src={imgSrc} alt={productName} fill className="object-contain p-4 sm:p-6 drop-shadow-md relative z-10" priority sizes="(max-width: 1024px) 100vw, 50vw" onError={() => setImgSrc('/images/hero-bg.png')} />
+              <Image src={imgSrc} alt={productName} fill className="object-contain p-4 sm:p-6 drop-shadow-md relative z-10" priority sizes="(max-width: 1024px) 100vw, 50vw" onError={() => setFailedSrc(image)} />
             </motion.div>
             
             <motion.div initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.15 }}>
@@ -76,7 +74,7 @@ export default function ProductDetail({
                 <span className={`w-1.5 h-1.5 ${divisionBg} rounded-full`} />
                 <span className={`${divisionColor} text-xs font-semibold tracking-wide uppercase`}>{division} Division</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-5 font-[family-name:var(--font-poppins)]">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-5 font-[family-name:var(--font-heading)]">
                 {productName}
               </h1>
               <div className="section-divider mb-6" />
@@ -86,7 +84,7 @@ export default function ProductDetail({
               
               {specs.length > 0 && (
                 <div className="mb-8">
-                  <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4 font-[family-name:var(--font-poppins)]">Key Specifications</h3>
+                  <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4 font-[family-name:var(--font-heading)]">Key Specifications</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {specs.map((spec, i) => (
                       <div key={i} className="flex items-center gap-2">
@@ -119,7 +117,7 @@ export default function ProductDetail({
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.1 }}
                   className="bg-white rounded-2xl p-6 border border-surface-darker/40 hover:shadow-md transition-shadow"
                 >
-                  <h4 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-2">{app.title}</h4>
+                  <h4 className="text-lg font-bold text-primary font-[family-name:var(--font-heading)] mb-2">{app.title}</h4>
                   <p className="text-sm text-secondary leading-relaxed">{app.desc}</p>
                 </motion.div>
               ))}

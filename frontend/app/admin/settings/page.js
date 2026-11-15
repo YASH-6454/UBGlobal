@@ -57,7 +57,7 @@ export default function AdminSettings() {
 
   return (
     <div className="max-w-md">
-      <h1 className="text-2xl font-bold text-primary font-[family-name:var(--font-poppins)] mb-2">Settings</h1>
+      <h1 className="text-2xl font-bold text-primary font-[family-name:var(--font-heading)] mb-2">Settings</h1>
       <p className="text-secondary text-sm mb-8">Change your admin password. Use at least 10 characters.</p>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-surface-darker/40 p-6 space-y-5">

@@ -47,7 +47,7 @@ export default function AdminLogin() {
             <Image src="/images/logo.png" alt="UBGlobal" width={40} height={40} className="w-10 h-10" />
             <span className="text-xl font-bold text-primary">UBGlobal Admin</span>
           </div>
-          <h1 className="text-2xl font-bold text-primary font-[family-name:var(--font-poppins)]">Sign in to Dashboard</h1>
+          <h1 className="text-2xl font-bold text-primary font-[family-name:var(--font-heading)]">Sign in to Dashboard</h1>
           <p className="text-secondary text-sm mt-2">Manage products, blogs, and banners</p>
         </div>
 

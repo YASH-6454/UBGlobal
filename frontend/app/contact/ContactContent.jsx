@@ -246,7 +246,7 @@ export default function ContactContent() {
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.5, delay: 0.25 }} className="lg:col-span-2 flex flex-col gap-6">
             <div className="bg-primary rounded-2xl p-7 text-white">
-              <h3 className="text-lg font-bold font-[family-name:var(--font-poppins)] mb-6">Contact Information</h3>
+              <h3 className="text-lg font-bold font-[family-name:var(--font-heading)] mb-6">Contact Information</h3>
               <div className="space-y-5">
                 {[
                   { icon: FiMapPin, label: 'Office Address', value: 'Mumbai, Maharashtra, India' },
@@ -264,7 +264,7 @@ export default function ContactContent() {
               </a>
             </div>
             <div className="bg-surface rounded-2xl p-7 border border-surface-darker/40">
-              <h3 className="text-base font-bold text-primary font-[family-name:var(--font-poppins)] mb-4">Business Hours</h3>
+              <h3 className="text-base font-bold text-primary font-[family-name:var(--font-heading)] mb-4">Business Hours</h3>
               <div className="space-y-3 text-sm text-secondary">
                 <div className="flex justify-between"><span>Monday – Friday</span><span className="font-medium text-primary">9:00 AM – 6:00 PM</span></div>
                 <div className="flex justify-between"><span>Saturday</span><span className="font-medium text-primary">9:00 AM – 2:00 PM</span></div>

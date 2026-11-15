@@ -59,7 +59,7 @@ export default function EngineeringContent() {
                 <span className="w-1.5 h-1.5 bg-eng rounded-full" />
                 <span className="text-eng text-xs font-semibold tracking-wide">Engineering Division</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] font-[family-name:var(--font-poppins)] mb-5">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] font-[family-name:var(--font-heading)] mb-5">
                 Premium <span className="text-gradient-eng">Engineering Materials</span> for Global Industry
               </h1>
               <p className="text-white/60 text-base sm:text-lg leading-relaxed mb-8">
@@ -104,7 +104,7 @@ export default function EngineeringContent() {
               >
                 <div className="absolute -right-3 -bottom-3 text-7xl opacity-[0.04] group-hover:opacity-[0.08] transition-opacity select-none">{ind.emoji}</div>
                 <div className="text-4xl mb-4">{ind.emoji}</div>
-                <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-3">{ind.name}</h3>
+                <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-heading)] mb-3">{ind.name}</h3>
                 <p className="text-secondary text-sm leading-relaxed relative z-10">{ind.description}</p>
               </motion.div>
             ))}
