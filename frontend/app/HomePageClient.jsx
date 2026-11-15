@@ -1,137 +1,138 @@
 'use client';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
+import { useState } from 'react';
+import { motion, MotionConfig } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GiSteelClaws, GiWheat, GiProcessor, GiFlame } from 'react-icons/gi';
-import { FiArrowRight, FiGlobe, FiAward, FiUsers, FiShield, FiCheckCircle, FiDollarSign, FiTruck } from 'react-icons/fi';
+import { FiArrowRight, FiArrowDown, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import SectionHeader from './components/sections/SectionHeader';
 import StatCounter from './components/sections/StatCounter';
 import CTABanner from './components/sections/CTABanner';
-import TestimonialCarousel from './components/sections/TestimonialCarousel';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import WhatsAppButton from './components/ui/WhatsAppButton';
 import ScrollToTop from './components/ui/ScrollToTop';
 import GlobalPresence from './components/GlobalPresence';
-import { FiCalendar, FiUser, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { useState, useEffect } from 'react';
 
-/* ─── Division Data ─── */
+/* ─── Content ─── */
 const divisions = [
   {
     name: 'Engineering Materials',
     href: '/engineering',
-    icon: GiSteelClaws,
-    color: 'text-eng',
-    bgColor: 'bg-eng',
-    bgLight: 'bg-eng/10',
-    gradient: 'from-eng to-eng-dark',
+    accent: '#F97316',
+    tag: 'Exported to 50+ countries',
     description: 'Premium steel products — Bright Bars, Black Bars, Alloy & Carbon Steel exported to 50+ countries worldwide.',
-    stats: '50+ Countries',
     image: '/images/bright-bars.png',
   },
   {
     name: 'Fruits & Vegetables',
     href: '/agriculture',
-    icon: GiWheat,
-    color: 'text-agri',
-    bgColor: 'bg-agri',
-    bgLight: 'bg-agri/10',
-    gradient: 'from-agri to-agri-dark',
+    accent: '#22C55E',
+    tag: 'APEDA certified',
     description: 'APEDA & FSSAI certified export of fresh Alphonso Mangoes, Onions, Pomegranates, Coconut, and more.',
-    stats: 'APEDA Certified',
-    image: '/images/hero-bg.png',
   },
   {
     name: 'IT Services',
     href: '/it-services',
-    icon: GiProcessor,
-    color: 'text-it',
-    bgColor: 'bg-it',
-    bgLight: 'bg-it/10',
-    gradient: 'from-it to-it-dark',
+    accent: '#3B82F6',
+    tag: 'Full stack',
     description: 'Web Development, ERP Solutions, Cloud Services, and IT Consultancy for businesses across the globe.',
-    stats: 'Full Stack',
-    image: '/images/hero-bg.png',
   },
   {
     name: 'Handcrafts',
     href: '/handcrafts',
-    icon: GiFlame,
-    color: 'text-craft',
-    bgColor: 'bg-craft',
-    bgLight: 'bg-craft/10',
-    gradient: 'from-craft to-craft-dark',
+    accent: '#D97706',
+    tag: 'Artisan made',
     description: 'Traditional Clay Diyas, Hand-Painted Decorative Diyas, Tea Light Holders, Pooja Accessories & Gift Sets — crafted by Indian artisans.',
-    stats: 'Artisan Made',
-    image: '/images/hero-bg.png',
   },
 ];
 
-const features = [
-  { icon: FiCheckCircle, title: 'Premium Quality', description: 'Every product sourced from certified suppliers with rigorous quality checks.', gradient: 'from-blue-500 to-blue-600' },
-  { icon: FiDollarSign, title: 'Competitive Pricing', description: 'Direct sourcing and efficient supply chain for the best market prices.', gradient: 'from-emerald-500 to-green-600' },
-  { icon: FiTruck, title: 'Global Delivery', description: 'Streamlined logistics to any destination worldwide with tracking.', gradient: 'from-orange-500 to-red-500' },
-  { icon: FiGlobe, title: 'Multi-Industry Expertise', description: 'Three diverse business verticals serving varied industry needs.', gradient: 'from-violet-500 to-indigo-600' },
+const reasons = [
+  { title: 'Premium Quality', description: 'Every product sourced from certified suppliers with rigorous quality checks.' },
+  { title: 'Competitive Pricing', description: 'Direct sourcing and efficient supply chain for the best market prices.' },
+  { title: 'Global Delivery', description: 'Streamlined logistics to any destination worldwide with tracking.' },
+  { title: 'Multi-Industry Expertise', description: 'Four diverse business verticals serving varied industry needs.' },
 ];
+
+// Matches foundingDate in the Organization schema (layout.js)
+const FOUNDED_YEAR = 2009;
+
+const stats = [
+  { value: String(new Date().getFullYear() - FOUNDED_YEAR), suffix: '+', label: 'Years of experience', desc: `Trading since ${FOUNDED_YEAR}` },
+  { value: '50', suffix: '+', label: 'Countries served', desc: 'Global export network' },
+  { value: '1000', suffix: '+', label: 'Clients', desc: 'Trusted partnerships' },
+  { value: '4', suffix: '', label: 'Business divisions', desc: 'Under one roof' },
+];
+
+const certs = [
+  { name: 'APEDA', full: 'Agricultural & Processed Food Products Export Development Authority', desc: 'Certified for export of agricultural products from India' },
+  { name: 'FSSAI', full: 'Food Safety and Standards Authority of India', desc: 'Licensed for food safety compliance and quality assurance' },
+];
+
+// Shown when the CMS has no banners yet, so the hero is never empty
+const FALLBACK_BANNER = {
+  title: 'Engineering.\nAgriculture.\nTechnology.',
+  description:
+    'United Brothers Global — a diversified trading and services company delivering premium engineering materials, fresh produce, and IT solutions across 50+ countries.',
+  cta_text: 'Get a Quote',
+  cta_link: '/contact',
+  image: '/images/bright-bars.png',
+};
+
+/* One shared, restrained scroll reveal */
+function Reveal({ children, delay = 0, className = '' }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 /* ─── Hero ─── */
 function HeroSection({ banners }) {
-  const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true });
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const currentBanner = banners && banners.length > 0 ? banners[currentIndex] : null;
-
-  const nextBanner = () => {
-    if (banners && banners.length > 0) {
-      setCurrentIndex((prev) => (prev + 1) % banners.length);
-    }
-  };
-
-  const prevBanner = () => {
-    if (banners && banners.length > 0) {
-      setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
-    }
-  };
-
-  if (!currentBanner) {
-    return <section className="relative min-h-screen flex items-center overflow-hidden group bg-primary" />;
-  }
+  const [index, setIndex] = useState(0);
+  const list = banners && banners.length > 0 ? banners : [FALLBACK_BANNER];
+  const banner = list[index % list.length];
+  const go = (dir) => setIndex((i) => (i + dir + list.length) % list.length);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden group">
-      <div className="absolute inset-0 transition-all duration-1000">
-        <Image src={currentBanner.image} alt={currentBanner.title} fill className="object-cover" priority quality={90} />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/90 to-primary-light/90" />
-      </div>
-      <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
-
-      {banners && banners.length > 1 && (
-        <>
-          <button onClick={prevBanner} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white opacity-0 group-hover:opacity-100 transition-all">
-            <FiChevronLeft size={24} />
-          </button>
-          <button onClick={nextBanner} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white opacity-0 group-hover:opacity-100 transition-all">
-            <FiChevronRight size={24} />
-          </button>
-        </>
+    <section className="relative min-h-[100svh] flex items-center overflow-hidden bg-primary">
+      {banner.image && (
+        <div className="absolute inset-0">
+          <Image src={banner.image} alt="" fill className="object-cover" priority quality={90} sizes="100vw" />
+          {/* Photo stays visible on the right; text side is anchored in navy */}
+          <div className="absolute inset-0 bg-primary/60 lg:bg-transparent" />
+          <div className="absolute inset-0 hidden lg:block bg-gradient-to-r from-primary from-35% via-primary/80 to-primary/10" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary/70 to-transparent" />
+        </div>
       )}
 
-      <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 pt-28 pb-20">
-        <div className="max-w-3xl mx-auto text-center lg:text-left lg:mx-0">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
-            <div className="inline-flex items-center gap-2 bg-white/[0.07] backdrop-blur-md border border-white/10 rounded-full px-4 py-1.5 mb-7">
-              <span className="w-1.5 h-1.5 bg-eng rounded-full animate-pulse" />
-              <span className="text-white/80 text-xs font-medium tracking-wide">Trusted by 1000+ Global Clients</span>
-            </div>
-          </motion.div>
-
-          <motion.h1 key={`title-${currentIndex}`} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] font-[family-name:var(--font-poppins)] mb-6"
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 pt-32 pb-28">
+        <div className="max-w-2xl">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="flex items-center gap-3 text-[11px] font-medium tracking-[0.24em] uppercase text-white/70 mb-8"
           >
-            {currentBanner.title.split('\n').map((line, i) => {
-              const color = i === 0 ? currentBanner.title_color : i === 1 ? currentBanner.title_color_2 : currentBanner.title_color_3;
+            <span aria-hidden="true" className="h-px w-10 bg-eng" />
+            Import &middot; Export &middot; Trade Solutions
+          </motion.p>
+
+          <motion.h1
+            key={`title-${index}`}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[2.75rem] sm:text-6xl lg:text-7xl font-medium leading-[1.03] tracking-tight font-[family-name:var(--font-heading)] mb-7"
+          >
+            {banner.title.split('\n').map((line, i) => {
+              const color = i === 0 ? banner.title_color : i === 1 ? banner.title_color_2 : banner.title_color_3;
               return (
                 <span key={i} style={{ color: color || '#ffffff', display: 'block' }}>
                   {line}
@@ -140,149 +141,188 @@ function HeroSection({ banners }) {
             })}
           </motion.h1>
 
-          <motion.p key={`desc-${currentIndex}`} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-base sm:text-lg max-w-xl mb-10 leading-relaxed lg:mx-0 mx-auto"
-            style={{ color: currentBanner.description_color || 'rgba(255, 255, 255, 0.6)' }}
+          <motion.p
+            key={`desc-${index}`}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="text-base sm:text-lg max-w-xl mb-10 leading-relaxed"
+            style={{ color: banner.description_color || 'rgba(255, 255, 255, 0.72)' }}
           >
-            {currentBanner.description}
+            {banner.description}
           </motion.p>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 mb-14 justify-center lg:justify-start"
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8"
           >
-            <Link href={currentBanner.cta_link || '/contact'}
-              className="group gradient-eng text-white px-8 py-4 rounded-xl text-base font-semibold hover:shadow-xl hover:shadow-eng/25 transition-all duration-300 hover:-translate-y-0.5 text-center inline-flex items-center justify-center gap-2"
+            <Link
+              href={banner.cta_link || '/contact'}
+              className="group inline-flex items-center justify-center gap-2 bg-eng text-primary-dark px-8 py-4 rounded-md text-base font-semibold hover:bg-eng-light transition-colors duration-200"
             >
-              {currentBanner.cta_text || 'Get a Quote'}
+              {banner.cta_text || 'Get a Quote'}
               <FiArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
-            <Link href="#divisions"
-              className="bg-white/[0.08] backdrop-blur-md border border-white/15 text-white px-8 py-4 rounded-xl text-base font-semibold hover:bg-white/[0.14] transition-all duration-300 hover:-translate-y-0.5 text-center"
+            <Link
+              href="#divisions"
+              className="group inline-flex self-start items-center gap-2 text-white text-base font-medium border-b border-white/40 pb-1 hover:border-white transition-colors"
             >
-              Explore Divisions
+              Explore divisions
+              <FiArrowDown className="w-4 h-4 transition-transform duration-300 group-hover:translate-y-0.5" />
             </Link>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.4 }}
-            className="flex flex-wrap gap-10 sm:gap-14 pt-8 border-t border-white/10 justify-center lg:justify-start"
-          >
-            {[
-              { value: '15+', label: 'Years Experience' },
-              { value: '50+', label: 'Countries Served' },
-              { value: '1000+', label: 'Satisfied Clients' },
-              { value: '4', label: 'Business Divisions' },
-            ].map((stat, i) => (
-              <div key={i}>
-                <div className="text-3xl sm:text-4xl font-bold text-eng font-[family-name:var(--font-poppins)]">{stat.value}</div>
-                <div className="text-white/40 text-sm mt-1 font-medium">{stat.label}</div>
-              </div>
-            ))}
           </motion.div>
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/80 to-transparent" />
-
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-1.5"
-      >
-        <span className="text-white/30 text-[10px] tracking-[0.2em] uppercase font-medium">Scroll</span>
-        <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-5 h-8 border-2 border-white/20 rounded-full flex justify-center pt-2"
-        >
-          <div className="w-1 h-2 bg-eng rounded-full" />
-        </motion.div>
-      </motion.div>
+      {list.length > 1 && (
+        <div className="absolute bottom-8 left-0 right-0 z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4 text-white">
+            <button onClick={() => go(-1)} aria-label="Previous banner" className="w-10 h-10 border border-white/30 rounded-md flex items-center justify-center hover:bg-white hover:text-primary transition-colors">
+              <FiChevronLeft />
+            </button>
+            <button onClick={() => go(1)} aria-label="Next banner" className="w-10 h-10 border border-white/30 rounded-md flex items-center justify-center hover:bg-white hover:text-primary transition-colors">
+              <FiChevronRight />
+            </button>
+            <span className="text-sm tracking-widest text-white/70 tabular-nums">
+              {String((index % list.length) + 1).padStart(2, '0')} / {String(list.length).padStart(2, '0')}
+            </span>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
 
-/* ─── Division Selector (Bento Grid) ─── */
+/* ─── Divisions: one lead feature + a numbered list ─── */
 function DivisionSelector() {
-  const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true });
+  const [lead, ...rest] = divisions;
 
   return (
     <section id="divisions" className="py-20 sm:py-28 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           label="Our Divisions"
-          title="Four Verticals,"
-          titleHighlight="One Vision"
+          title="Four verticals,"
+          titleHighlight="one vision"
           highlightClass="text-gradient-eng"
+          align="left"
           description="From engineering materials to fresh produce and digital solutions — we deliver excellence across industries."
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {divisions.map((div, i) => (
-            <motion.div
-              key={div.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
-            >
-              <Link href={div.href} className={`division-card ${div.name.includes('Engineering') ? 'eng' : div.name.includes('Agriculture') || div.name.includes('Fruits') ? 'agri' : div.name.includes('Handcrafts') ? 'craft' : 'it'} bg-surface rounded-3xl overflow-hidden border border-surface-darker/40 group block h-full`}>
-                <div className="relative h-48 overflow-hidden">
-                  <Image src={div.image} alt={div.name} fill className="object-cover transition-transform duration-700 group-hover:scale-110" sizes="(max-width:1024px) 100vw, 33vw" />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${div.gradient} opacity-80`} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
-                      <div.icon className="text-white text-4xl" />
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4">
-                    <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-[11px] font-semibold">
-                      {div.stats}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-6 relative z-10">
-                  <h3 className="text-xl font-bold text-primary font-[family-name:var(--font-poppins)] mb-2 group-hover:text-eng transition-colors">
-                    {div.name}
-                  </h3>
-                  <p className="text-secondary text-sm leading-relaxed mb-4">
-                    {div.description}
-                  </p>
-                  <span className={`inline-flex items-center gap-1.5 text-sm font-semibold ${div.color} group-hover:gap-3 transition-all`}>
-                    Explore <FiArrowRight className="text-xs" />
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14">
+          <Reveal className="lg:col-span-7">
+            <Link href={lead.href} className="group relative block min-h-[420px] lg:min-h-[560px] h-full rounded-lg overflow-hidden bg-primary">
+              <Image
+                src={lead.image}
+                alt={lead.name}
+                fill
+                className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
+                sizes="(max-width: 1024px) 100vw, 58vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/65 to-primary/10" />
+              <div className="absolute inset-x-0 bottom-0 p-7 sm:p-10 text-white">
+                <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/70 mb-4">01 &mdash; {lead.tag}</p>
+                <div className="h-0.5 w-10 mb-5" style={{ background: lead.accent }} />
+                <h3 className="font-[family-name:var(--font-heading)] text-3xl sm:text-4xl font-medium mb-3">{lead.name}</h3>
+                <p className="text-white/75 max-w-md leading-relaxed mb-6">{lead.description}</p>
+                <span className="inline-flex items-center gap-2 text-sm font-semibold group-hover:gap-4 transition-all duration-300">
+                  Explore division <FiArrowRight />
+                </span>
+              </div>
+            </Link>
+          </Reveal>
+
+          <div className="lg:col-span-5 flex flex-col">
+            {rest.map((div, i) => (
+              <Reveal key={div.name} delay={i * 0.08} className="flex-1">
+                <Link
+                  href={div.href}
+                  style={{ '--acc': div.accent }}
+                  className="group h-full flex items-start gap-5 py-8 border-t border-primary/15 hover:border-[color:var(--acc)] transition-colors duration-300 last:border-b"
+                >
+                  <span className="text-sm font-medium text-secondary tabular-nums pt-1.5 w-8 shrink-0">0{i + 2}</span>
+                  <span className="flex-1">
+                    <span className="block font-[family-name:var(--font-heading)] text-2xl font-medium text-primary mb-2">{div.name}</span>
+                    <span className="block text-sm text-secondary leading-relaxed mb-3">{div.description}</span>
+                    <span className="text-[11px] font-medium tracking-[0.2em] uppercase" style={{ color: div.accent }}>{div.tag}</span>
                   </span>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                  <FiArrowRight className="mt-2 text-primary/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                </Link>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ─── Why UBGlobal ─── */
-function WhyUBGlobal() {
-  const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true });
-
+/* ─── Stats: shown once, as large figures ─── */
+function StatsSection() {
   return (
-    <section className="py-20 sm:py-28 gradient-primary relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-72 h-72 bg-eng/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" ref={ref}>
-        <SectionHeader
-          label="Why Choose Us"
-          title="The United Brothers Advantage"
-          description="We go beyond supplying products — we build lasting partnerships founded on trust, quality, and mutual growth."
-          light
-        />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((f, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: i * 0.1 }}
-              className="bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] rounded-2xl p-7 group hover:bg-white/[0.12] transition-all duration-400 hover:-translate-y-2"
-            >
-              <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg`}>
-                <f.icon className="text-white text-xl" />
+    <section className="py-20 sm:py-24 bg-surface">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <p className="flex items-center gap-3 text-[11px] font-medium tracking-[0.24em] uppercase text-secondary mb-10">
+            <span aria-hidden="true" className="h-px w-8 bg-eng" />
+            Our impact
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-primary/15">
+            {stats.map((stat, i) => (
+              <div
+                key={stat.label}
+                className={`py-8 lg:py-10 pr-4 ${i % 2 === 1 ? 'pl-5 border-l border-primary/15' : ''} ${i >= 2 ? 'border-t lg:border-t-0 border-primary/15' : ''} ${i >= 1 ? 'lg:pl-8 lg:border-l lg:border-primary/15' : ''}`}
+              >
+                <StatCounter
+                  target={stat.value}
+                  suffix={stat.suffix}
+                  align="left"
+                  valueClassName="text-5xl sm:text-6xl lg:text-7xl font-normal text-primary leading-none"
+                />
+                <div className="text-primary font-medium mt-4 text-sm sm:text-base">{stat.label}</div>
+                <div className="text-secondary text-xs sm:text-sm mt-1">{stat.desc}</div>
               </div>
-              <h3 className="text-base font-bold text-white mb-2 font-[family-name:var(--font-poppins)]">{f.title}</h3>
-              <p className="text-white/50 text-sm leading-relaxed">{f.description}</p>
-            </motion.div>
-          ))}
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Why UBGlobal: sticky heading + numbered list ─── */
+function WhyUBGlobal() {
+  return (
+    <section className="py-20 sm:py-28 bg-primary">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+          <div className="lg:col-span-4">
+            <SectionHeader
+              label="Why Choose Us"
+              title="The United Brothers"
+              titleHighlight="advantage"
+              highlightClass="text-gradient-eng"
+              align="left"
+              light
+              className="lg:sticky lg:top-28 !mb-0"
+              description="We go beyond supplying products — we build lasting partnerships founded on trust, quality, and mutual growth."
+            />
+          </div>
+          <div className="lg:col-span-8">
+            {reasons.map((r, i) => (
+              <Reveal key={r.title} delay={i * 0.06}>
+                <div className="grid sm:grid-cols-[5rem_1fr] gap-2 sm:gap-6 py-8 border-t border-white/15 last:border-b">
+                  <span className="font-[family-name:var(--font-heading)] text-3xl text-white/30 tabular-nums">0{i + 1}</span>
+                  <div>
+                    <h3 className="font-[family-name:var(--font-heading)] text-2xl font-medium text-white mb-2">{r.title}</h3>
+                    <p className="text-white/65 leading-relaxed max-w-lg">{r.description}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
 
         <CTABanner
@@ -291,160 +331,91 @@ function WhyUBGlobal() {
           buttonText="Request Quote"
           buttonHref="/contact"
           variant="dark"
-          className="mt-14"
+          className="mt-20"
         />
       </div>
     </section>
   );
 }
 
-/* ─── Stats Section ─── */
-function StatsSection() {
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true });
-
-  const stats = [
-    { icon: FiAward, value: '15', suffix: '+', label: 'Years of Excellence', desc: 'Delivering quality since 2009' },
-    { icon: FiGlobe, value: '50', suffix: '+', label: 'Countries Reached', desc: 'Global export network' },
-    { icon: FiUsers, value: '1000', suffix: '+', label: 'Happy Clients', desc: 'Trusted partnerships' },
-    { icon: FiShield, value: '100', suffix: '%', label: 'Quality Assured', desc: 'Certified processes' },
-  ];
-
+/* ─── Certifications: typographic, no boxes ─── */
+function Certifications() {
   return (
-    <section className="py-20 sm:py-28 bg-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        <SectionHeader
-          label="Our Impact"
-          title="Numbers That"
-          titleHighlight="Speak"
-          highlightClass="text-gradient-eng"
-          description="Over 15 years of building trust, delivering quality, and expanding global reach."
-        />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {stats.map((stat, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.4, delay: 0.2 + i * 0.08 }}
-              className="counter-card bg-white rounded-2xl p-6 text-center border border-surface-darker/40 group hover:bg-primary hover:border-primary"
-            >
-              <div className="w-12 h-12 mx-auto bg-eng/10 rounded-xl flex items-center justify-center mb-3 group-hover:bg-eng/20 transition-colors">
-                <stat.icon className="text-eng text-xl" />
-              </div>
-              <StatCounter target={stat.value} suffix={stat.suffix} />
-              <div className="text-primary font-semibold mt-2 group-hover:text-white transition-colors text-sm">{stat.label}</div>
-              <div className="text-secondary-light text-xs mt-0.5 group-hover:text-white/50 transition-colors">{stat.desc}</div>
-            </motion.div>
-          ))}
+    <section className="py-20 sm:py-24 bg-surface">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+          <Reveal className="lg:col-span-4">
+            <p className="flex items-center gap-3 text-[11px] font-medium tracking-[0.24em] uppercase text-secondary mb-5">
+              <span aria-hidden="true" className="h-px w-8 bg-eng" />
+              Certified &amp; licensed
+            </p>
+            <p className="font-[family-name:var(--font-heading)] text-2xl sm:text-3xl text-primary leading-snug">
+              Operations backed by recognised certifications, for quality and compliance.
+            </p>
+          </Reveal>
+          <div className="lg:col-span-8 grid sm:grid-cols-2 gap-x-10 gap-y-10">
+            {certs.map((c, i) => (
+              <Reveal key={c.name} delay={i * 0.08}>
+                <div className="border-t border-primary/20 pt-6">
+                  <div className="font-[family-name:var(--font-heading)] text-5xl text-primary mb-4">{c.name}</div>
+                  <div className="text-sm font-medium text-primary mb-1.5">{c.full}</div>
+                  <div className="text-sm text-secondary">{c.desc}</div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ─── Certifications ─── */
-function Certifications() {
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true });
-  const certs = [
-    { name: 'APEDA', full: 'Agricultural & Processed Food Products Export Development Authority', desc: 'Certified for export of agricultural products from India' },
-    { name: 'FSSAI', full: 'Food Safety and Standards Authority of India', desc: 'Licensed for food safety compliance and quality assurance' },
-  ];
-
-  return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
-          className="bg-surface rounded-3xl p-8 sm:p-10 border border-surface-darker/40"
-        >
-          <div className="flex flex-col sm:flex-row items-center gap-8">
-            <div className="shrink-0">
-              <div className="flex items-center gap-2 mb-2">
-                <FiShield className="text-eng text-xl" />
-                <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)]">Certified & Licensed</h3>
-              </div>
-              <p className="text-secondary text-sm max-w-xs">Our operations are backed by recognized certifications ensuring quality and compliance.</p>
-            </div>
-            <div className="flex flex-wrap gap-4 flex-1">
-              {certs.map((cert, i) => (
-                <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={inView ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 0.4, delay: 0.2 + i * 0.1 }}
-                  className="bg-white rounded-xl p-5 border border-surface-darker/40 flex-1 min-w-[200px] hover:shadow-lg transition-shadow"
-                >
-                  <div className="text-2xl font-extrabold text-eng font-[family-name:var(--font-poppins)] mb-1">{cert.name}</div>
-                  <div className="text-xs font-medium text-primary mb-1">{cert.full}</div>
-                  <div className="text-xs text-secondary">{cert.desc}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Testimonials Wrapper ─── */
-function TestimonialsSection() {
-  return (
-    <section className="py-20 sm:py-28 gradient-primary relative overflow-hidden">
-      <div className="absolute top-16 left-10 w-56 h-56 bg-eng/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-16 right-10 w-72 h-72 bg-white/[0.02] rounded-full blur-3xl" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <SectionHeader
-          label="Testimonials"
-          title="What Our Clients Say"
-          description="Hear from our valued clients across the globe and across all our business divisions."
-          light
-        />
-        <TestimonialCarousel division="all" light />
-      </div>
-    </section>
-  );
-}
-
-/* ─── Blog Preview ─── */
+/* ─── Blog preview: borderless editorial grid ─── */
 function BlogPreview({ blogs }) {
-  const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true });
-
-  const getDivisionColor = (category) => {
-    if (category === 'Engineering') return 'text-eng bg-eng/10';
-    if (category === 'Agriculture') return 'text-agri bg-agri/10';
-    if (category === 'Handcrafts') return 'text-craft bg-craft/10';
-    return 'text-it bg-it/10';
-  };
+  if (!blogs || blogs.length === 0) return null;
 
   return (
-    <section className="py-20 sm:py-28 bg-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        <SectionHeader
-          label="Latest Insights"
-          title="From Our Blog"
-          description="Stay updated with industry trends, export insights, and company news."
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {blogs && blogs.map((post, i) => {
-            const imageSrc = post.image || '/images/hero-bg.png';
-            const postDate = post.date || post.created_at || new Date().toISOString();
+    <section className="py-20 sm:py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-14">
+          <SectionHeader
+            label="Latest Insights"
+            title="From our"
+            titleHighlight="blog"
+            highlightClass="text-gradient-eng"
+            align="left"
+            className="!mb-0"
+            description="Industry trends, export insights, and company news."
+          />
+          <Link href="/blog" className="group inline-flex items-center gap-2 text-sm font-semibold text-primary border-b border-primary/30 pb-1 hover:border-primary transition-colors self-start sm:self-auto">
+            All articles <FiArrowRight className="transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
+          {blogs.map((post, i) => {
+            const imageSrc = post.image || '/images/hero-bg.png';
+            const postDate = post.date || post.created_at;
             return (
-              <motion.div key={post.slug || i} initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: i * 0.1 }}>
-                <Link href={`/blog/${post.slug}`} className="bg-white rounded-2xl overflow-hidden border border-surface-darker/40 group block h-full flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className="relative h-48 overflow-hidden shrink-0 bg-surface">
-                    <Image src={imageSrc} alt={post.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute top-4 left-4">
-                      <span className={`px-3 py-1 rounded-full text-[11px] font-bold ${getDivisionColor(post.category)}`}>
-                        {post.category || 'General'}
-                      </span>
-                    </div>
+              <Reveal key={post.slug || i} delay={i * 0.08}>
+                <Link href={`/blog/${post.slug}`} className="group block">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-md bg-surface mb-5">
+                    <Image src={imageSrc} alt={post.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-lg font-bold text-primary font-[family-name:var(--font-poppins)] mb-3 group-hover:text-eng transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-surface-darker/50 text-xs text-secondary-light">
-                      <div className="flex items-center gap-1.5">
-                        <FiCalendar /> {new Date(postDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </div>
-                    </div>
-                  </div>
+                  <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-secondary mb-3">
+                    {post.category || 'General'}
+                    {postDate && (
+                      <>
+                        <span className="mx-2 text-secondary/50">/</span>
+                        {new Date(postDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </>
+                    )}
+                  </p>
+                  <h3 className="font-[family-name:var(--font-heading)] text-xl sm:text-2xl font-medium text-primary leading-snug line-clamp-3 group-hover:underline decoration-1 underline-offset-4">
+                    {post.title}
+                  </h3>
                 </Link>
-              </motion.div>
+              </Reveal>
             );
           })}
         </div>
@@ -455,7 +426,7 @@ function BlogPreview({ blogs }) {
 
 export default function HomePageClient({ initialBanners, initialBlogs }) {
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <Navbar />
       <main>
         <HeroSection banners={initialBanners} />
@@ -464,12 +435,11 @@ export default function HomePageClient({ initialBanners, initialBlogs }) {
         <WhyUBGlobal />
         <GlobalPresence />
         <Certifications />
-        <TestimonialsSection />
         <BlogPreview blogs={initialBlogs} />
       </main>
       <Footer />
       <WhatsAppButton />
       <ScrollToTop />
-    </>
+    </MotionConfig>
   );
 }

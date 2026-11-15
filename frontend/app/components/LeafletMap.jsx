@@ -113,11 +113,12 @@ export default function LeafletMap({ selectedCountry, onCountrySelect }) {
       worldCopyJump: true,
     });
 
-    // Light mode tile layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    // OpenStreetMap standard tiles (free, no key). Attribution is required by the OSM tile policy.
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
     }).addTo(map);
+    L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
 
     // Add zoom control to bottom-right
     L.control.zoom({ position: 'bottomright' }).addTo(map);

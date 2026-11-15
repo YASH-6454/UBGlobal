@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-export default function StatCounter({ target, suffix = '', label, description, className = '' }) {
+export default function StatCounter({ target, suffix = '', label, description, className = '', align = 'center', valueClassName = 'text-3xl sm:text-4xl font-bold text-eng' }) {
   const [count, setCount] = useState(0);
   const [ref, inView] = useInView({ threshold: 0.5, triggerOnce: true });
 
@@ -25,8 +25,8 @@ export default function StatCounter({ target, suffix = '', label, description, c
   }, [inView, target]);
 
   return (
-    <div ref={ref} className={`text-center ${className}`}>
-      <div className="text-3xl sm:text-4xl font-bold text-eng font-[family-name:var(--font-poppins)]">
+    <div ref={ref} className={`${align === 'left' ? 'text-left' : 'text-center'} ${className}`}>
+      <div className={`${valueClassName} font-[family-name:var(--font-heading)]`}>
         {count}{suffix}
       </div>
       {label && <div className="text-primary font-semibold mt-2 text-sm">{label}</div>}

@@ -3,7 +3,8 @@ import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FiGlobe, FiMapPin } from 'react-icons/fi';
+import { FiMapPin } from 'react-icons/fi';
+import SectionHeader from './sections/SectionHeader';
 
 // Dynamic import for Leaflet (no SSR)
 const LeafletMap = dynamic(() => import('./LeafletMap'), {
@@ -56,27 +57,22 @@ export default function GlobalPresence() {
   return (
     <section id="global" className="py-20 sm:py-28 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-14"
-        >
-          <span className="text-eng font-semibold text-xs tracking-[0.2em] uppercase">Global Presence</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mt-3 mb-4 font-[family-name:var(--font-poppins)]">
-            Delivering Across <span className="text-gradient-eng">50+ Countries</span>
-          </h2>
-        </motion.div>
+        <SectionHeader
+          label="Global Presence"
+          title="Delivering across"
+          titleHighlight="50+ countries"
+          highlightClass="text-gradient-eng"
+          description="Select a destination to trace the route from India."
+        />
 
         {/* Interactive Map */}
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="relative isolate rounded-3xl mb-8 border border-surface-darker/40 shadow-2xl overflow-hidden"
+          className="relative isolate rounded-lg mb-10 border border-surface-darker shadow-[var(--shadow-card)] overflow-hidden"
         >
-          <div className="w-full h-[400px] sm:h-[500px] lg:h-[550px] overflow-hidden rounded-3xl">
+          <div className="w-full h-[400px] sm:h-[500px] lg:h-[550px] overflow-hidden rounded-lg">
             <LeafletMap selectedCountry={selectedCountry} onCountrySelect={handleCountrySelect} />
           </div>
 
@@ -85,7 +81,7 @@ export default function GlobalPresence() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="absolute top-4 left-4 bg-white/95 backdrop-blur-md rounded-xl px-4 py-2.5 shadow-lg border border-surface-darker/30 flex items-center gap-2 z-10"
+              className="absolute top-4 left-4 bg-white/95 backdrop-blur-md rounded-md px-4 py-2.5 shadow-[var(--shadow-card)] border border-surface-darker flex items-center gap-2 z-10"
             >
               <FiMapPin className="text-eng" />
               <span className="text-sm font-semibold text-primary">
@@ -107,18 +103,15 @@ export default function GlobalPresence() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <div className="flex items-center justify-center gap-2 mb-5">
-            <FiGlobe className="text-eng" />
-            <h3 className="text-base font-bold text-primary font-[family-name:var(--font-poppins)]">Export Destinations</h3>
-          </div>
+          <p className="text-center text-[11px] font-medium tracking-[0.24em] uppercase text-secondary mb-5">Export destinations</p>
 
           <div className="flex items-center justify-center gap-2 mb-4">
             <button
               onClick={() => setSelectedCountry(null)}
-              className={`px-5 py-2 text-sm rounded-full font-semibold transition-all duration-300 ${
+              className={`px-5 py-2 text-sm rounded-md font-semibold transition-colors duration-200 ${
                 !selectedCountry
-                  ? 'gradient-eng text-white shadow-lg shadow-eng/25'
-                  : 'bg-surface text-secondary border border-surface-darker/40 hover:bg-primary/5'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface text-secondary border border-surface-darker hover:bg-surface-dark'
               }`}
             >
               Show All Routes
